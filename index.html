@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استمارة تسجيل الفنانين</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #000000); }
+        .input-dark { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(71, 85, 105, 0.5); color: #f8fafc; }
+        .input-dark:focus { border-color: #8b5cf6; outline: none; box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); }
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4 text-slate-200">
+
+    <div class="max-w-3xl mx-auto glass p-8 rounded-3xl shadow-2xl border border-slate-700">
+        <h1 class="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">منصة الفن التشكيلي</h1>
+        <p class="text-center text-slate-400 mb-8">يرجى ملء البيانات بدقة لإتمام التسجيل.</p>
+
+        <form id="registrationForm" class="space-y-6">
+            <div>
+                <label for="fullName" class="block text-sm font-semibold mb-2">الاسم الرباعي <span class="text-rose-500">*</span></label>
+                <input type="text" id="fullName" required class="w-full px-5 py-3.5 rounded-xl input-dark">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="phone" class="block text-sm font-semibold mb-2">رقم الهاتف (يبدأ بـ 01) <span class="text-rose-500">*</span></label>
+                    <input type="tel" id="phone" pattern="01[0-9]{9}" placeholder="01xxxxxxxxx" required class="w-full px-5 py-3.5 rounded-xl input-dark">
+                </div>
+                <div>
+                    <label for="nationalId" class="block text-sm font-semibold mb-2">الرقم القومي (14 رقم) <span class="text-rose-500">*</span></label>
+                    <input type="text" id="nationalId" pattern="[0-9]{14}" placeholder="xxxxxxxxxxxxxx" required class="w-full px-5 py-3.5 rounded-xl input-dark">
+                </div>
+            </div>
+
+            <div>
+                <label for="address" class="block text-sm font-semibold mb-2">العنوان بالتفصيل <span class="text-rose-500">*</span></label>
+                <textarea id="address" required rows="3" class="w-full px-5 py-3.5 rounded-xl input-dark resize-none"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold mb-3">صور الرسومات (2 على الأقل، 12 كحد أقصى) <span class="text-rose-500">*</span></label>
+                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3" id="artworksContainer"></div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-violet-600 hover:bg-violet-700 transition-all font-bold text-white shadow-lg shadow-violet-900/50">
+                إرسال البيانات
+            </button>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 p-8 rounded-2xl max-w-sm w-full text-center border border-slate-700">
+            <h3 id="modalTitle" class="text-xl font-bold mb-4"></h3>
+            <p id="modalMsg" class="mb-6 text-slate-300"></p>
+            <button onclick="document.getElementById('modal').classList.add('hidden')" class="w-full py-3 bg-violet-600 rounded-lg hover:bg-violet-500 transition-colors">حسناً</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTLe3tDrKIm3OFmdL9TszegV_11d2dIYmxRO2_MWck2U4GZ94CP-CaYBuEhRiCA7oi/exec";
+        const artworksContainer = document.getElementById('artworksContainer');
+        const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+
+        for (let i = 1; i <= 12; i++) {
+            const box = document.createElement('div');
+            box.className = 'relative aspect-square';
+            box.innerHTML = `
+                <input type="file" id="artwork${i}" accept="image/*" class="hidden artwork-input">
+                <label for="artwork${i}" class="cursor-pointer absolute inset-0 flex flex-col items-center justify-center bg-slate-800/40 border-2 border-dashed border-slate-600 rounded-xl hover:border-violet-500 transition-all">
+                    <span id="placeholder${i}" class="text-xs text-slate-400">رسمة ${i}</span>
+                    <img id="preview${i}" class="hidden w-full h-full object-cover rounded-xl">
+                </label>
+            `;
+            artworksContainer.appendChild(box);
+        }
+
+        document.querySelectorAll('.artwork-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                const id = this.id.replace('artwork', '');
+                const preview = document.getElementById(`preview${id}`);
+                const placeholder = document.getElementById(`placeholder${id}`);
+
+                if (file) {
+                    if (file.size > MAX_FILE_SIZE) {
+                        alert("الصورة كبيرة جداً!");
+                        this.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = e => {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                        placeholder.classList.add('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const uploaded = Array.from(document.querySelectorAll('.artwork-input')).filter(i => i.files.length > 0);
+            
+            if (uploaded.length < 2) {
+                showModal("تنبيه", "يجب إرفاق صورتين على الأقل.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "جاري الإرسال...";
+            
+            const formData = new FormData();
+            formData.append('fullName', document.getElementById('fullName').value);
+            formData.append('phone', document.getElementById('phone').value);
+            formData.append('nationalId', document.getElementById('nationalId').value);
+            formData.append('address', document.getElementById('address').value);
+            formData.append('fileCount', uploaded.length);
+            
+            uploaded.forEach((input, index) => {
+                formData.append('file' + index, input.files[0]);
+            });
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData, mode: 'no-cors' });
+                showModal("تم النجاح", "تم استلام طلبك بنجاح.");
+                document.getElementById('registrationForm').reset();
+                location.reload(); 
+            } catch (err) {
+                showModal("خطأ", "حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "إرسال البيانات";
+            }
+        });
+
+        function showModal(title, msg) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMsg').innerText = msg;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
