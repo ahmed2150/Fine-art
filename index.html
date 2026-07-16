@@ -3,98 +3,524 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة تسجيل الفنانين</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>منصة الفن التشكيلي - تسجيل</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
     <style>
-        body { background: radial-gradient(circle at top, #1e1b4b, #000); min-height: 100vh; color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.05); }
-        .input-dark { background: rgba(0,0,0,0.3); border: 1px solid #334155; transition: all 0.3s; }
-        .input-dark:focus { border-color: #8b5cf6; outline: none; box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); }
-        input[type="checkbox"] + span { padding: 12px 20px; font-size: 1rem; border-width: 2px; }
-        input[type="checkbox"]:checked + span { border-color: #8b5cf6 !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background: radial-gradient(circle at top right, #0f172a, #020617);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .input-dark {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #334155;
+            color: white;
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            transition: 0.3s;
+        }
+        .input-dark:focus {
+            border-color: #8b5cf6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        .input-dark::placeholder {
+            color: #64748b;
+        }
+        .input-dark option {
+            background: #1e293b;
+            color: white;
+        }
+        .upload-box {
+            border: 2px dashed #475569;
+            transition: 0.3s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.3);
+        }
+        .upload-box:hover {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .upload-box.has-image {
+            border-color: #22c55e;
+            border-style: solid;
+        }
+        .upload-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .upload-box .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 5;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .upload-box.has-image .remove-btn {
+            display: flex;
+        }
+        .upload-box .plus-icon {
+            font-size: 2rem;
+            color: #64748b;
+            transition: 0.3s;
+        }
+        .upload-box:hover .plus-icon {
+            color: #8b5cf6;
+        }
+        .custom-check input {
+            display: none;
+        }
+        .custom-check span {
+            display: block;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            border: 1px solid #475569;
+            background: #1e293b;
+            color: #94a3b8;
+            transition: 0.3s;
+            cursor: pointer;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        .custom-check input:checked+span {
+            background: #7c3aed;
+            border-color: #7c3aed;
+            color: white;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+        }
+        .custom-check:hover span {
+            border-color: #8b5cf6;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 600;
+            z-index: 9999;
+            transition: 0.5s;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+        .toast.success {
+            background: #22c55e;
+            color: white;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.3);
+        }
+        .toast.error {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+        }
+        .toast.info {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+        .image-counter {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+        @media (max-width: 640px) {
+            .upload-box {
+                height: 80px;
+            }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #1e293b;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+            display: none;
+        }
+        .progress-bar .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
     </style>
 </head>
-<body class="py-10 px-4">
-    <div class="max-w-4xl mx-auto glass p-6 md:p-10 rounded-3xl shadow-2xl">
-        <h1 class="text-3xl font-bold text-center mb-8 text-violet-400">منصة تسجيل الفنانين</h1>
-        
-        <div id="replyBox" class="hidden mb-8 p-6 bg-violet-900/30 border-2 border-violet-500/50 rounded-2xl">
-            <h2 class="text-xl font-bold text-violet-300 mb-2">رد الإدارة:</h2>
-            <p id="replyContent" class="text-white text-lg"></p>
+<body class="p-4 md:p-10">
+    <div class="max-w-4xl mx-auto glass p-6 md:p-8 rounded-3xl shadow-2xl border border-slate-700">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-violet-400 flex items-center justify-center gap-3">
+                استمارة تسجيل الفنانين
+            </h1>
+            <p class="text-slate-400 mt-2">يرجى ملء كافة البيانات بعناية</p>
         </div>
 
-        <form id="regForm" class="space-y-8">
-            <!-- ... existing code: inputs ... -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input type="text" name="fullName" id="fullName" placeholder="الاسم الرباعي" required class="w-full px-5 py-3 rounded-xl input-dark">
-                <input type="tel" name="phone" id="phone" placeholder="رقم الهاتف" required class="w-full px-5 py-3 rounded-xl input-dark">
-                <input type="text" name="nationalId" id="nationalId" placeholder="الرقم القومي (14 رقم)" required class="w-full px-5 py-3 rounded-xl input-dark">
-                <select name="grade" id="grade" class="w-full px-5 py-3 rounded-xl input-dark"><option value="">الفرقة الدراسية</option><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select>
+        <form id="artistForm" class="space-y-6">
+
+            <!-- المعلومات الأساسية -->
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">الاسم الرباعي</label>
+                    <input type="text" id="fullName" placeholder="مثال: أحمد محمد علي حسن" required class="input-dark">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">الكود الجامعي</label>
+                    <input type="number" id="uniId" placeholder="7 أرقام" required class="input-dark" maxlength="7">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">رقم الهاتف</label>
+                    <input type="tel" id="phone" placeholder="01xxxxxxxxx" pattern="01[0-9]{9}" required class="input-dark">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">الرقم القومي</label>
+                    <input type="text" id="nationalId" placeholder="14 رقم" pattern="[0-9]{14}" required class="input-dark">
+                </div>
             </div>
-            
-            <div id="dynamicSections" class="space-y-6"></div>
-            
-            <!-- ... existing code: other selects ... -->
-            
+
+            <!-- القوائم المنسدلة -->
+            <div class="grid md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">الفرقة الدراسية</label>
+                    <select id="grade" class="input-dark" required>
+                        <option value="" disabled selected>اختر</option>
+                        <option>الفرقة الأولى</option>
+                        <option>الفرقة الثانية</option>
+                        <option>الفرقة الثالثة</option>
+                        <option>الفرقة الرابعة</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">المستوى</label>
+                    <select id="level" class="input-dark" required>
+                        <option value="" disabled selected>اختر</option>
+                        <option>مبتدئ</option>
+                        <option>متوسط</option>
+                        <option>متقدم</option>
+                        <option>خبير</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">طبيعة العمل</label>
+                    <select id="workNature" class="input-dark" required>
+                        <option value="" disabled selected>اختر</option>
+                        <option>أصلي 100%</option>
+                        <option>مقتبس</option>
+                        <option>إعادة تنفيذ (Recreation)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">التنفيذ</label>
+                    <select id="execution" class="input-dark" required>
+                        <option value="" disabled selected>اختر</option>
+                        <option>فردي</option>
+                        <option>جماعي</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- الاختيارات المتعددة -->
             <div class="space-y-4">
-                <label class="block text-lg text-violet-300 font-bold">إضافة صور الأعمال الفنية (اختر من 2 إلى 12 صورة)</label>
-                <div id="imageInputs" class="grid grid-cols-3 md:grid-cols-6 gap-3"></div>
+                <div>
+                    <label class="block text-violet-300 mb-2 font-semibold">نوع الخامات</label>
+                    <div id="materials" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div>
+                    <label class="block text-violet-300 mb-2 font-semibold">نوع الرسم</label>
+                    <div id="styles" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div>
+                    <label class="block text-violet-300 mb-2 font-semibold">نوع الموهبة</label>
+                    <div id="talents" class="flex flex-wrap gap-2"></div>
+                </div>
             </div>
-            
-            <textarea name="notes" id="notes" placeholder="ملاحظات..." class="w-full px-5 py-4 rounded-xl input-dark h-24"></textarea>
-            <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-violet-600 hover:bg-violet-700 font-bold transition-all text-white text-lg shadow-lg">إرسال البيانات</button>
+
+            <!-- رفع الصور -->
+            <div>
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <label class="text-violet-300 font-semibold">إضافة صور الأعمال الفنية</label>
+                    <span class="image-counter" id="imageCounter">0 / 12 صورة</span>
+                </div>
+                <p class="text-slate-400 text-sm mb-3">(حد أدنى صورة واحدة - حد أقصى 12 صورة)</p>
+                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3" id="artGrid"></div>
+            </div>
+
+            <!-- الملاحظات -->
+            <div>
+                <label class="block text-slate-300 text-sm mb-1">ملاحظات إضافية</label>
+                <textarea id="notes" placeholder="أي ملاحظات تريد إضافتها..." class="input-dark" rows="3"></textarea>
+            </div>
+
+            <!-- شريط التحميل -->
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- أزرار الإجراءات -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button type="button" id="clearImagesBtn" class="bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">
+                    مسح جميع الصور
+                </button>
+                <button type="submit" id="submitBtn" class="bg-violet-600 hover:bg-violet-700 py-3 rounded-xl font-bold transition shadow-lg shadow-violet-900/50 flex items-center justify-center gap-2">
+                    إرسال البيانات
+                </button>
+            </div>
         </form>
     </div>
 
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
     <script>
-        const SCRIPT_URL = "YOUR_SCRIPT_URL_HERE"; 
-        
-        async function checkStatus(id) {
-            const res = await fetch(`${SCRIPT_URL}?nationalId=${id}`);
-            const result = await res.json();
-            const box = document.getElementById('replyBox');
-            if(result.status === "success" && result.data && result.data.reply) {
-                document.getElementById('replyContent').innerText = result.data.reply;
-                box.classList.remove('hidden');
-            } else {
-                box.classList.add('hidden');
-            }
-        }
+        // ===== البيانات =====
+        const config = {
+            materials: ["رصاص", "فحم", "جواش", "سوفت باستيل", "أكريليك", "زيت", "حبر", "ألوان خشب", "ماركر"],
+            styles: ["تجريدي", "سيريالي", "تقليدي", "واقعي", "بورتريه", "كاريكاتير", "بوب ارت", "كلاسيكي", "فانتازيا", "تكعيبي",
+                "تعبيري", "مينيمال"
+            ],
+            talents: ["رسم", "نحت", "حفر", "تطريز", "خزف وفخار", "موازييك", "ديكوباج", "تصوير فوتوغرافي", "حرق خشب",
+                "تشكيل ورقي", "ريزن ارت", "اشغال يدوية", "خط عربي", "تشكيل نحاس", "تشكيل خشب", "جرافيك"
+            ]
+        };
 
-        document.getElementById('nationalId').addEventListener('blur', (e) => {
-            if(e.target.value.length === 14) checkStatus(e.target.value);
-        });
-
-        // ... existing code: initialization and form handling ...
-        const config = [{name: 'materials', label: 'نوع الخامات', items: ['رصاص', 'فحم', 'اكريلك', 'زيت', 'جواش', 'سوفت باستيل', 'حبر', 'ألوان خشب', 'ماركر']}, {name: 'styles', label: 'نوع الرسم', items: ['تجريدي', 'سيريالي', 'تقليدي', 'واقعي', 'بورتريه', 'كاريكاتير', 'بوب ارت', 'كلاسيكي', 'فانتازيا', 'تعبيري', 'مينيمال']}, {name: 'talents', label: 'نوع الموهبة', items: ['رسم', 'نحت', 'حفر', 'تطريز', 'خزف وفخار', 'موازييك', 'ديكوباج', 'تصوير فوتوغرافي', 'حرق على الخشب', 'تشكيل ورقي', 'ريزن ارت', 'اشغال يدوي', 'هجرافيك', 'خط عربي', 'تشكيل النحاس']}];
-        config.forEach(s => {
-            const container = document.createElement('div');
-            container.innerHTML = `<label class="text-violet-300 font-bold text-lg mb-3 block">${s.label}</label><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="${s.name}"></div>`;
-            document.getElementById('dynamicSections').appendChild(container);
-            s.items.forEach(i => {
-                document.getElementById(s.name).innerHTML += `<label class="cursor-pointer"><input type="checkbox" name="${s.name}" value="${i}" class="hidden peer"><span class="block px-4 py-3 text-center rounded-xl border border-slate-700 bg-slate-800 text-slate-300 peer-checked:bg-violet-600 peer-checked:text-white peer-checked:border-violet-500 transition-all duration-200">${i}</span></label>`;
+        // ===== توليد الاختيارات =====
+        Object.keys(config).forEach(key => {
+            const container = document.getElementById(key);
+            config[key].forEach(val => {
+                container.innerHTML += `
+                        <label class="custom-check">
+                            <input type="checkbox" name="${key}" value="${val}">
+                            <span>${val}</span>
+                        </label>`;
             });
         });
 
-        for(let i=0; i<12; i++) { document.getElementById('imageInputs').innerHTML += `<input type="file" id="f${i}" class="hidden" accept="image/*"><label for="f${i}" class="h-20 bg-slate-800 rounded-xl flex items-center justify-center border-dashed border-2 border-slate-600 cursor-pointer hover:border-violet-500 transition-all">+</label>`; }
+        // ===== معرض الصور =====
+        const artGrid = document.getElementById('artGrid');
+        const imageCounter = document.getElementById('imageCounter');
+        let imageFiles = [];
 
-        const form = document.getElementById('regForm');
-        form.addEventListener('input', () => { localStorage.setItem('artData', JSON.stringify(Object.fromEntries(new FormData(form)))); });
-        window.onload = () => { const saved = JSON.parse(localStorage.getItem('artData')); if(saved) for(let k in saved) { const el = form.elements[k]; if(el && el.type !== 'checkbox') el.value = saved[k]; if(saved.nationalId) checkStatus(saved.nationalId); } };
+        function updateImageCounter() {
+            const count = imageFiles.filter(f => f !== null).length;
+            imageCounter.textContent = `${count} / 12 صورة`;
+        }
 
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "جاري الإرسال...";
-            const formData = new FormData(form);
-            const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-            const result = await response.json();
-            if(result.status === "success") {
-                alert("تم التسجيل/التحديث بنجاح!");
-                localStorage.removeItem('artData');
-                form.reset();
+        function removeImage(index) {
+            imageFiles[index] = null;
+            const box = document.getElementById(`uploadBox${index}`);
+            const img = document.getElementById(`img${index}`);
+            const plus = box.querySelector('.plus-icon');
+            const removeBtn = box.querySelector('.remove-btn');
+            const fileInput = document.getElementById(`file${index}`);
+
+            box.classList.remove('has-image');
+            img.classList.add('hidden');
+            img.src = '';
+            plus.classList.remove('hidden');
+            removeBtn.style.display = 'none';
+            fileInput.value = '';
+            updateImageCounter();
+        }
+
+        function preview(input, index) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                imageFiles[index] = file;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.getElementById(`img${index}`);
+                    const box = document.getElementById(`uploadBox${index}`);
+                    const plus = box.querySelector('.plus-icon');
+                    const removeBtn = box.querySelector('.remove-btn');
+
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    box.classList.add('has-image');
+                    plus.classList.add('hidden');
+                    removeBtn.style.display = 'flex';
+                    updateImageCounter();
+                }
+                reader.readAsDataURL(file);
             }
-            btn.innerText = "إرسال البيانات";
+        }
+
+        // توليد مربعات الصور
+        for (let i = 0; i < 12; i++) {
+            imageFiles[i] = null;
+            artGrid.innerHTML += `
+                    <div class="upload-box" id="uploadBox${i}" onclick="document.getElementById('file${i}').click()">
+                        <span class="plus-icon text-2xl text-slate-500">+</span>
+                        <button class="remove-btn" onclick="event.stopPropagation(); removeImage(${i})">✕</button>
+                        <input type="file" id="file${i}" class="hidden" accept="image/*" onchange="preview(this, ${i})">
+                        <img id="img${i}" class="hidden w-full h-full object-cover absolute top-0 left-0">
+                    </div>
+                `;
+        }
+
+        // ===== مسح جميع الصور =====
+        document.getElementById('clearImagesBtn').addEventListener('click', () => {
+            for (let i = 0; i < 12; i++) {
+                removeImage(i);
+            }
+            showToast('تم مسح جميع الصور', 'info');
+        });
+
+        // ===== Toast =====
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        // ===== التحقق من تنسيق الأرقام =====
+        document.getElementById('phone').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 11);
+        });
+        document.getElementById('nationalId').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 14);
+        });
+        document.getElementById('uniId').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 7);
+        });
+
+        // ===== إرسال النموذج =====
+        document.getElementById('artistForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+
+            btn.disabled = true;
+            btn.innerHTML = 'جاري الإرسال...';
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+
+            // التحقق من وجود صورة
+            const fileCount = imageFiles.filter(f => f !== null).length;
+            if (fileCount === 0) {
+                showToast('يجب رفع صورة واحدة على الأقل', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'إرسال البيانات';
+                progressBar.style.display = 'none';
+                return;
+            }
+
+            // التحقق من الحقول المطلوبة
+            const requiredFields = ['fullName', 'uniId', 'phone', 'nationalId', 'grade', 'level', 'workNature', 'execution'];
+            for (let id of requiredFields) {
+                const value = document.getElementById(id).value.trim();
+                if (!value) {
+                    showToast(`يرجى تعبئة حقل ${document.getElementById(id).placeholder || id}`, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'إرسال البيانات';
+                    progressBar.style.display = 'none';
+                    return;
+                }
+            }
+
+            // جمع البيانات
+            const formData = new FormData();
+
+            // الحقول النصية
+            ['fullName', 'uniId', 'phone', 'nationalId', 'grade', 'level', 'workNature', 'execution', 'notes'].forEach(id => {
+                formData.append(id, document.getElementById(id).value.trim());
+            });
+
+            // الاختيارات المتعددة
+            ['materials', 'styles', 'talents'].forEach(key => {
+                const checked = Array.from(document.querySelectorAll(`input[name="${key}"]:checked`)).map(c => c
+                .value);
+                formData.append(key, checked.join(', ') || 'لا يوجد');
+            });
+
+            // الصور
+            imageFiles.forEach((file, index) => {
+                if (file) {
+                    formData.append(`file${index}`, file);
+                }
+            });
+            formData.append('fileCount', fileCount);
+
+            try {
+                // استخدام رابط الـ Web App الجديد
+                const response = await fetch(
+                    "https://script.google.com/macros/s/AKfycbwvlb_tFue5uJVQxd_jijHjJ4HCJK1Z6v1j2wkU-i2ZUv4pvw3dG_FeNAyfY-vEDb48/exec", {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                progressFill.style.width = '100%';
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        showToast('تم الإرسال بنجاح! سيتم إبلاغك قريباً', 'success');
+                        setTimeout(() => location.reload(), 3000);
+                    } else {
+                        showToast(result.message || 'حدث خطأ في الخادم', 'error');
+                    }
+                } else {
+                    showToast('حدث خطأ في الخادم، حاول مرة أخرى', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('حدث خطأ في الاتصال، تأكد من الإنترنت', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'إرسال البيانات';
+                setTimeout(() => {
+                    progressBar.style.display = 'none';
+                    progressFill.style.width = '0%';
+                }, 1000);
+            }
         };
     </script>
 </body>
