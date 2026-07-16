@@ -3,147 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استمارة تسجيل الفنانين</title>
+    <title>منصة تسجيل الفنانين</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #000000); }
-        .input-dark { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(71, 85, 105, 0.5); color: #f8fafc; }
+        body { background: radial-gradient(circle at top, #1e1b4b, #000); min-height: 100vh; color: #f8fafc; font-family: 'Segoe UI', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.05); }
+        .input-dark { background: rgba(0,0,0,0.3); border: 1px solid #334155; transition: all 0.3s; }
         .input-dark:focus { border-color: #8b5cf6; outline: none; box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); }
-        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        input[type="checkbox"] + span { padding: 12px 20px; font-size: 1rem; border-width: 2px; }
+        input[type="checkbox"]:checked + span { border-color: #8b5cf6 !important; }
     </style>
 </head>
-<body class="min-h-screen py-10 px-4 text-slate-200">
+<body class="py-10 px-4">
+    <div class="max-w-4xl mx-auto glass p-6 md:p-10 rounded-3xl shadow-2xl">
+        <h1 class="text-3xl font-bold text-center mb-8 text-violet-400">منصة تسجيل الفنانين</h1>
+        
+        <div id="replyBox" class="hidden mb-8 p-6 bg-violet-900/30 border-2 border-violet-500/50 rounded-2xl">
+            <h2 class="text-xl font-bold text-violet-300 mb-2">رد الإدارة:</h2>
+            <p id="replyContent" class="text-white text-lg"></p>
+        </div>
 
-    <div class="max-w-3xl mx-auto glass p-8 rounded-3xl shadow-2xl border border-slate-700">
-        <h1 class="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">منصة الفن التشكيلي</h1>
-        <p class="text-center text-slate-400 mb-8">يرجى ملء البيانات بدقة لإتمام التسجيل.</p>
-
-        <form id="registrationForm" class="space-y-6">
-            <div>
-                <label for="fullName" class="block text-sm font-semibold mb-2">الاسم الرباعي <span class="text-rose-500">*</span></label>
-                <input type="text" id="fullName" required class="w-full px-5 py-3.5 rounded-xl input-dark">
-            </div>
-
+        <form id="regForm" class="space-y-8">
+            <!-- ... existing code: inputs ... -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="phone" class="block text-sm font-semibold mb-2">رقم الهاتف (يبدأ بـ 01) <span class="text-rose-500">*</span></label>
-                    <input type="tel" id="phone" pattern="01[0-9]{9}" placeholder="01xxxxxxxxx" required class="w-full px-5 py-3.5 rounded-xl input-dark">
-                </div>
-                <div>
-                    <label for="nationalId" class="block text-sm font-semibold mb-2">الرقم القومي (14 رقم) <span class="text-rose-500">*</span></label>
-                    <input type="text" id="nationalId" pattern="[0-9]{14}" placeholder="xxxxxxxxxxxxxx" required class="w-full px-5 py-3.5 rounded-xl input-dark">
-                </div>
+                <input type="text" name="fullName" id="fullName" placeholder="الاسم الرباعي" required class="w-full px-5 py-3 rounded-xl input-dark">
+                <input type="tel" name="phone" id="phone" placeholder="رقم الهاتف" required class="w-full px-5 py-3 rounded-xl input-dark">
+                <input type="text" name="nationalId" id="nationalId" placeholder="الرقم القومي (14 رقم)" required class="w-full px-5 py-3 rounded-xl input-dark">
+                <select name="grade" id="grade" class="w-full px-5 py-3 rounded-xl input-dark"><option value="">الفرقة الدراسية</option><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option></select>
             </div>
-
-            <div>
-                <label for="address" class="block text-sm font-semibold mb-2">العنوان بالتفصيل <span class="text-rose-500">*</span></label>
-                <textarea id="address" required rows="3" class="w-full px-5 py-3.5 rounded-xl input-dark resize-none"></textarea>
+            
+            <div id="dynamicSections" class="space-y-6"></div>
+            
+            <!-- ... existing code: other selects ... -->
+            
+            <div class="space-y-4">
+                <label class="block text-lg text-violet-300 font-bold">إضافة صور الأعمال الفنية (اختر من 2 إلى 12 صورة)</label>
+                <div id="imageInputs" class="grid grid-cols-3 md:grid-cols-6 gap-3"></div>
             </div>
-
-            <div>
-                <label class="block text-sm font-semibold mb-3">صور الرسومات (2 على الأقل، 12 كحد أقصى) <span class="text-rose-500">*</span></label>
-                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3" id="artworksContainer"></div>
-            </div>
-
-            <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-violet-600 hover:bg-violet-700 transition-all font-bold text-white shadow-lg shadow-violet-900/50">
-                إرسال البيانات
-            </button>
+            
+            <textarea name="notes" id="notes" placeholder="ملاحظات..." class="w-full px-5 py-4 rounded-xl input-dark h-24"></textarea>
+            <button type="submit" id="submitBtn" class="w-full py-4 rounded-xl bg-violet-600 hover:bg-violet-700 font-bold transition-all text-white text-lg shadow-lg">إرسال البيانات</button>
         </form>
     </div>
 
-    <!-- Modal -->
-    <div id="modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-slate-800 p-8 rounded-2xl max-w-sm w-full text-center border border-slate-700">
-            <h3 id="modalTitle" class="text-xl font-bold mb-4"></h3>
-            <p id="modalMsg" class="mb-6 text-slate-300"></p>
-            <button onclick="document.getElementById('modal').classList.add('hidden')" class="w-full py-3 bg-violet-600 rounded-lg hover:bg-violet-500 transition-colors">حسناً</button>
-        </div>
-    </div>
-
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTLe3tDrKIm3OFmdL9TszegV_11d2dIYmxRO2_MWck2U4GZ94CP-CaYBuEhRiCA7oi/exec";
-        const artworksContainer = document.getElementById('artworksContainer');
-        const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
-
-        for (let i = 1; i <= 12; i++) {
-            const box = document.createElement('div');
-            box.className = 'relative aspect-square';
-            box.innerHTML = `
-                <input type="file" id="artwork${i}" accept="image/*" class="hidden artwork-input">
-                <label for="artwork${i}" class="cursor-pointer absolute inset-0 flex flex-col items-center justify-center bg-slate-800/40 border-2 border-dashed border-slate-600 rounded-xl hover:border-violet-500 transition-all">
-                    <span id="placeholder${i}" class="text-xs text-slate-400">رسمة ${i}</span>
-                    <img id="preview${i}" class="hidden w-full h-full object-cover rounded-xl">
-                </label>
-            `;
-            artworksContainer.appendChild(box);
+        const SCRIPT_URL = "YOUR_SCRIPT_URL_HERE"; 
+        
+        async function checkStatus(id) {
+            const res = await fetch(`${SCRIPT_URL}?nationalId=${id}`);
+            const result = await res.json();
+            const box = document.getElementById('replyBox');
+            if(result.status === "success" && result.data && result.data.reply) {
+                document.getElementById('replyContent').innerText = result.data.reply;
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
         }
 
-        document.querySelectorAll('.artwork-input').forEach(input => {
-            input.addEventListener('change', function() {
-                const file = this.files[0];
-                const id = this.id.replace('artwork', '');
-                const preview = document.getElementById(`preview${id}`);
-                const placeholder = document.getElementById(`placeholder${id}`);
+        document.getElementById('nationalId').addEventListener('blur', (e) => {
+            if(e.target.value.length === 14) checkStatus(e.target.value);
+        });
 
-                if (file) {
-                    if (file.size > MAX_FILE_SIZE) {
-                        alert("الصورة كبيرة جداً!");
-                        this.value = '';
-                        return;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = e => {
-                        preview.src = e.target.result;
-                        preview.classList.remove('hidden');
-                        placeholder.classList.add('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                }
+        // ... existing code: initialization and form handling ...
+        const config = [{name: 'materials', label: 'نوع الخامات', items: ['رصاص', 'فحم', 'اكريلك', 'زيت', 'جواش', 'سوفت باستيل', 'حبر', 'ألوان خشب', 'ماركر']}, {name: 'styles', label: 'نوع الرسم', items: ['تجريدي', 'سيريالي', 'تقليدي', 'واقعي', 'بورتريه', 'كاريكاتير', 'بوب ارت', 'كلاسيكي', 'فانتازيا', 'تعبيري', 'مينيمال']}, {name: 'talents', label: 'نوع الموهبة', items: ['رسم', 'نحت', 'حفر', 'تطريز', 'خزف وفخار', 'موازييك', 'ديكوباج', 'تصوير فوتوغرافي', 'حرق على الخشب', 'تشكيل ورقي', 'ريزن ارت', 'اشغال يدوي', 'هجرافيك', 'خط عربي', 'تشكيل النحاس']}];
+        config.forEach(s => {
+            const container = document.createElement('div');
+            container.innerHTML = `<label class="text-violet-300 font-bold text-lg mb-3 block">${s.label}</label><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3" id="${s.name}"></div>`;
+            document.getElementById('dynamicSections').appendChild(container);
+            s.items.forEach(i => {
+                document.getElementById(s.name).innerHTML += `<label class="cursor-pointer"><input type="checkbox" name="${s.name}" value="${i}" class="hidden peer"><span class="block px-4 py-3 text-center rounded-xl border border-slate-700 bg-slate-800 text-slate-300 peer-checked:bg-violet-600 peer-checked:text-white peer-checked:border-violet-500 transition-all duration-200">${i}</span></label>`;
             });
         });
 
-        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+        for(let i=0; i<12; i++) { document.getElementById('imageInputs').innerHTML += `<input type="file" id="f${i}" class="hidden" accept="image/*"><label for="f${i}" class="h-20 bg-slate-800 rounded-xl flex items-center justify-center border-dashed border-2 border-slate-600 cursor-pointer hover:border-violet-500 transition-all">+</label>`; }
+
+        const form = document.getElementById('regForm');
+        form.addEventListener('input', () => { localStorage.setItem('artData', JSON.stringify(Object.fromEntries(new FormData(form)))); });
+        window.onload = () => { const saved = JSON.parse(localStorage.getItem('artData')); if(saved) for(let k in saved) { const el = form.elements[k]; if(el && el.type !== 'checkbox') el.value = saved[k]; if(saved.nationalId) checkStatus(saved.nationalId); } };
+
+        form.onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            const uploaded = Array.from(document.querySelectorAll('.artwork-input')).filter(i => i.files.length > 0);
-            
-            if (uploaded.length < 2) {
-                showModal("تنبيه", "يجب إرفاق صورتين على الأقل.");
-                return;
-            }
-
-            btn.disabled = true;
             btn.innerText = "جاري الإرسال...";
-            
-            const formData = new FormData();
-            formData.append('fullName', document.getElementById('fullName').value);
-            formData.append('phone', document.getElementById('phone').value);
-            formData.append('nationalId', document.getElementById('nationalId').value);
-            formData.append('address', document.getElementById('address').value);
-            formData.append('fileCount', uploaded.length);
-            
-            uploaded.forEach((input, index) => {
-                formData.append('file' + index, input.files[0]);
-            });
-
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData, mode: 'no-cors' });
-                showModal("تم النجاح", "تم استلام طلبك بنجاح.");
-                document.getElementById('registrationForm').reset();
-                location.reload(); 
-            } catch (err) {
-                showModal("خطأ", "حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "إرسال البيانات";
+            const formData = new FormData(form);
+            const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+            const result = await response.json();
+            if(result.status === "success") {
+                alert("تم التسجيل/التحديث بنجاح!");
+                localStorage.removeItem('artData');
+                form.reset();
             }
-        });
-
-        function showModal(title, msg) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalMsg').innerText = msg;
-            document.getElementById('modal').classList.remove('hidden');
-        }
+            btn.innerText = "إرسال البيانات";
+        };
     </script>
 </body>
 </html>
