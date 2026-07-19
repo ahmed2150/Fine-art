@@ -1,171 +1,713 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <base target="_top">
+<html lang="ar" dir="rtl" class="dark">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رفع صور الطلاب</title>
+    <title>منصة الفن التشكيلي - تسجيل</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
     <style>
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        max-width: 500px;
-        margin: 50px auto;
-        padding: 20px;
-        background: #f5f7fa;
-        direction: rtl;
-      }
-      .container {
-        background: white;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      }
-      h1 {
-        color: #1a73e8;
-        text-align: center;
-        border-bottom: 3px solid #1a73e8;
-        padding-bottom: 10px;
-      }
-      label {
-        display: block;
-        margin: 15px 0 5px;
-        font-weight: bold;
-        color: #333;
-      }
-      input[type="text"], input[type="file"] {
-        width: 100%;
-        padding: 10px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        font-size: 16px;
-        box-sizing: border-box;
-      }
-      button {
-        width: 100%;
-        padding: 12px;
-        background: #1a73e8;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 20px;
-        transition: background 0.3s;
-      }
-      button:hover {
-        background: #1557b0;
-      }
-      #status {
-        margin-top: 15px;
-        padding: 12px;
-        border-radius: 8px;
-        text-align: center;
-        display: none;
-      }
-      .success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-        display: block !important;
-      }
-      .error {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-        display: block !important;
-      }
-      .note {
-        margin-top: 20px;
-        font-size: 14px;
-        color: #666;
-        text-align: center;
-        border-top: 1px solid #eee;
-        padding-top: 15px;
-      }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background: radial-gradient(circle at top right, #0f172a, #020617);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .input-dark {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid #334155;
+            color: white;
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            transition: 0.3s;
+        }
+        .input-dark:focus {
+            border-color: #8b5cf6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        .input-dark::placeholder {
+            color: #64748b;
+        }
+        .input-dark option {
+            background: #1e293b;
+            color: white;
+        }
+        .upload-box {
+            border: 2px dashed #475569;
+            transition: 0.3s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.3);
+        }
+        .upload-box:hover {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .upload-box.has-image {
+            border-color: #22c55e;
+            border-style: solid;
+        }
+        .upload-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .upload-box .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 5;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .upload-box.has-image .remove-btn {
+            display: flex;
+        }
+        .upload-box .plus-icon {
+            font-size: 2rem;
+            color: #64748b;
+            transition: 0.3s;
+        }
+        .upload-box:hover .plus-icon {
+            color: #8b5cf6;
+        }
+        .upload-box .uploading {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa);
+            width: 0%;
+            transition: width 0.5s;
+            z-index: 3;
+        }
+        .upload-box .uploading.active {
+            width: 100%;
+        }
+        .upload-box .link-icon {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+        .upload-box.has-link .link-icon {
+            display: flex;
+        }
+        .custom-check input {
+            display: none;
+        }
+        .custom-check span {
+            display: block;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            border: 1px solid #475569;
+            background: #1e293b;
+            color: #94a3b8;
+            transition: 0.3s;
+            cursor: pointer;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+        .custom-check input:checked+span {
+            background: #7c3aed;
+            border-color: #7c3aed;
+            color: white;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+        }
+        .custom-check:hover span {
+            border-color: #8b5cf6;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 600;
+            z-index: 9999;
+            transition: 0.5s;
+            opacity: 0;
+            pointer-events: none;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+        .toast.success {
+            background: #22c55e;
+            color: white;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.3);
+        }
+        .toast.error {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+        }
+        .toast.info {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+        }
+        .image-counter {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+        @media (max-width: 640px) {
+            .upload-box {
+                height: 80px;
+            }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #1e293b;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+            display: none;
+        }
+        .progress-bar .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 2px;
+        }
+
+        /* نافذة النجاح المنبثقة */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        .success-modal.show {
+            display: flex;
+        }
+        .success-modal .modal-content {
+            background: #1e293b;
+            border: 2px solid #7c3aed;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: modalPop 0.5s ease;
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .success-modal .icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+        .success-modal h2 {
+            font-size: 1.8rem;
+            color: #22c55e;
+            margin-bottom: 12px;
+        }
+        .success-modal p {
+            color: #94a3b8;
+            margin-bottom: 8px;
+            line-height: 1.8;
+        }
+        .success-modal .ticket-number {
+            background: #0f172a;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #a78bfa;
+            margin: 16px 0;
+            border: 1px dashed #7c3aed;
+        }
+        .success-modal .btn-close-modal {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 16px;
+        }
+        .success-modal .btn-close-modal:hover {
+            background: #6d28d9;
+            transform: scale(1.02);
+        }
     </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>📚 رفع صور الطلاب</h1>
-      
-      <label for="studentName">👤 اسم الطالب:</label>
-      <input type="text" id="studentName" placeholder="أدخل اسم الطالب" required>
-      
-      <label for="fileInput">🖼️ اختر صورة الطالب:</label>
-      <input type="file" id="fileInput" accept="image/*" required>
-      
-      <button onclick="uploadFile()">🚀 رفع الصورة</button>
-      
-      <div id="status"></div>
-      <div class="note">سيتم حفظ الصورة في جوجل درايف باسم الطالب</div>
+</head>
+<body class="p-4 md:p-10">
+
+    <!-- ===== نافذة النجاح ===== -->
+    <div class="success-modal" id="successModal">
+        <div class="modal-content">
+            <div class="icon">🎉</div>
+            <h2>تم التسجيل بنجاح!</h2>
+            <p>شكراً لك على التسجيل في منصة الفن التشكيلي.</p>
+            <p>تم حفظ بياناتك وصورك بنجاح.</p>
+            <div class="ticket-number" id="ticketNumber">#TK-2026-0001</div>
+            <p style="font-size:0.9rem; color:#64748b;">سيتم التواصل معك قريباً</p>
+            <button class="btn-close-modal" onclick="closeSuccessModal()">✅ حسناً</button>
+        </div>
     </div>
 
+    <div class="max-w-4xl mx-auto glass p-6 md:p-8 rounded-3xl shadow-2xl border border-slate-700">
+
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-violet-400 flex items-center justify-center gap-3">
+                استمارة تسجيل الفنانين
+            </h1>
+            <p class="text-slate-400 mt-2">يرجى ملء كافة البيانات بعناية</p>
+        </div>
+
+        <form id="artistForm" class="space-y-6">
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">الاسم الرباعي</label>
+                    <input type="text" id="fullName" placeholder="مثال: أحمد محمد علي حسن" required class="input-dark">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">الكود الجامعي</label>
+                    <input type="number" id="uniId" placeholder="7 أرقام" required class="input-dark" maxlength="7">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">رقم الهاتف</label>
+                    <input type="tel" id="phone" placeholder="01xxxxxxxxx" pattern="01[0-9]{9}" required class="input-dark">
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">الرقم القومي</label>
+                    <input type="text" id="nationalId" placeholder="14 رقم" pattern="[0-9]{14}" required class="input-dark">
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">الفرقة الدراسية</label>
+                    <select id="grade" class="input-dark" required>
+                        <option value="" disabled selected>اختر</option>
+                        <option>الفرقة الأولى</option>
+                        <option>الفرقة الثانية</option>
+                        <option>الفرقة الثالثة</option>
+                        <option>الفرقة الرابعة</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">المستوى</label>
+                    <select id="level" class="input-dark" required>
+                        <option value="" disabled selected>اختر</option>
+                        <option>مبتدئ</option>
+                        <option>متوسط</option>
+                        <option>متقدم</option>
+                        <option>خبير</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">طبيعة العمل</label>
+                    <select id="workNature" class="input-dark" required>
+                        <option value="" disabled selected>اختر</option>
+                        <option>أصلي 100%</option>
+                        <option>مقتبس</option>
+                        <option>إعادة تنفيذ (Recreation)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-slate-300 text-sm mb-1">التنفيذ</label>
+                    <select id="execution" class="input-dark" required>
+                        <option value="" disabled selected>اختر</option>
+                        <option>فردي</option>
+                        <option>جماعي</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-violet-300 mb-2 font-semibold">نوع الخامات</label>
+                    <div id="materials" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div>
+                    <label class="block text-violet-300 mb-2 font-semibold">نوع الرسم</label>
+                    <div id="styles" class="flex flex-wrap gap-2"></div>
+                </div>
+                <div>
+                    <label class="block text-violet-300 mb-2 font-semibold">نوع الموهبة</label>
+                    <div id="talents" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                    <label class="text-violet-300 font-semibold">إضافة صور الأعمال الفنية</label>
+                    <span class="image-counter" id="imageCounter">0 / 12 صورة</span>
+                </div>
+                <p class="text-slate-400 text-sm mb-3">(حد أدنى صورة واحدة - حد أقصى 12 صورة)</p>
+                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3" id="artGrid"></div>
+            </div>
+
+            <div>
+                <label class="block text-slate-300 text-sm mb-1">ملاحظات إضافية</label>
+                <textarea id="notes" placeholder="أي ملاحظات تريد إضافتها..." class="input-dark" rows="3"></textarea>
+            </div>
+
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button type="button" id="clearImagesBtn" class="bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">
+                    مسح جميع الصور
+                </button>
+                <button type="submit" id="submitBtn" class="bg-violet-600 hover:bg-violet-700 py-3 rounded-xl font-bold transition shadow-lg shadow-violet-900/50 flex items-center justify-center gap-2">
+                    إرسال البيانات
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
     <script>
-      function uploadFile() {
-        var studentName = document.getElementById('studentName').value.trim();
-        var fileInput = document.getElementById('fileInput');
-        var statusDiv = document.getElementById('status');
-        
-        // التحقق من المدخلات
-        if (!studentName) {
-          statusDiv.className = 'error';
-          statusDiv.textContent = '⚠️ الرجاء إدخال اسم الطالب';
-          statusDiv.style.display = 'block';
-          return;
-        }
-        
-        if (!fileInput.files || fileInput.files.length === 0) {
-          statusDiv.className = 'error';
-          statusDiv.textContent = '⚠️ الرجاء اختيار صورة';
-          statusDiv.style.display = 'block';
-          return;
-        }
-        
-        var file = fileInput.files[0];
-        
-        // التحقق من حجم الصورة (أقل من 10 ميجابايت)
-        if (file.size > 10 * 1024 * 1024) {
-          statusDiv.className = 'error';
-          statusDiv.textContent = '⚠️ حجم الصورة كبير جداً (الحد الأقصى 10 ميجابايت)';
-          statusDiv.style.display = 'block';
-          return;
-        }
-        
-        // تعطيل الزر لمنع الضغط المتكرر
-        document.querySelector('button').disabled = true;
-        document.querySelector('button').textContent = '⏳ جاري الرفع...';
-        
-        statusDiv.className = '';
-        statusDiv.style.display = 'block';
-        statusDiv.textContent = '⏳ جاري رفع الصورة...';
-        
-        // قراءة الملف وتحويله
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          var fileData = e.target.result.split(',')[1]; // استخراج البيانات base64
-          
-          // استدعاء الدالة في الخادم
-          google.script.run
-            .withSuccessHandler(function(response) {
-              statusDiv.className = 'success';
-              statusDiv.textContent = response;
-              document.querySelector('button').disabled = false;
-              document.querySelector('button').textContent = '🚀 رفع الصورة';
-              document.getElementById('studentName').value = '';
-              document.getElementById('fileInput').value = '';
-            })
-            .withFailureHandler(function(error) {
-              statusDiv.className = 'error';
-              statusDiv.textContent = '❌ حدث خطأ: ' + error.message;
-              document.querySelector('button').disabled = false;
-              document.querySelector('button').textContent = '🚀 رفع الصورة';
-            })
-            .uploadFileToDrive(fileData, file.name, studentName);
+        // ===== رابط التطبيق (عدّل هذا الرابط بعد النشر) =====
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5RTUp732HyU_NpBzT2K75f1KuDSRQ9XCg2UDBrhMZwEo_ZfW3d0wuIgN5mK4t0LK8/exec";
+
+        // ===== البيانات =====
+        const config = {
+            materials: ["رصاص", "فحم", "جواش", "سوفت باستيل", "أكريليك", "زيت", "حبر", "ألوان خشب", "ماركر"],
+            styles: ["تجريدي", "سيريالي", "تقليدي", "واقعي", "بورتريه", "كاريكاتير", "بوب ارت", "كلاسيكي", "فانتازيا", "تكعيبي",
+                "تعبيري", "مينيمال"
+            ],
+            talents: ["رسم", "نحت", "حفر", "تطريز", "خزف وفخار", "موازييك", "ديكوباج", "تصوير فوتوغرافي", "حرق خشب",
+                "تشكيل ورقي", "ريزن ارت", "اشغال يدوية", "خط عربي", "تشكيل نحاس", "تشكيل خشب", "جرافيك"
+            ]
         };
-        
-        reader.readAsDataURL(file);
-      }
+
+        // ===== توليد الاختيارات =====
+        Object.keys(config).forEach(key => {
+            const container = document.getElementById(key);
+            config[key].forEach(val => {
+                container.innerHTML += `
+                        <label class="custom-check">
+                            <input type="checkbox" name="${key}" value="${val}">
+                            <span>${val}</span>
+                        </label>`;
+            });
+        });
+
+        // ===== معرض الصور =====
+        const artGrid = document.getElementById('artGrid');
+        const imageCounter = document.getElementById('imageCounter');
+        let imageData = [];
+
+        function updateImageCounter() {
+            const count = imageData.filter(d => d !== null && d.file !== null).length;
+            imageCounter.textContent = `${count} / 12 صورة`;
+        }
+
+        function removeImage(index) {
+            if (!imageData[index] || !imageData[index].file) return;
+            imageData[index] = null;
+            const box = document.getElementById(`uploadBox${index}`);
+            const img = document.getElementById(`img${index}`);
+            const plus = box.querySelector('.plus-icon');
+            const removeBtn = box.querySelector('.remove-btn');
+            const linkIcon = box.querySelector('.link-icon');
+            const fileInput = document.getElementById(`file${index}`);
+
+            box.classList.remove('has-image', 'has-link');
+            img.classList.add('hidden');
+            img.src = '';
+            plus.classList.remove('hidden');
+            removeBtn.style.display = 'none';
+            linkIcon.style.display = 'none';
+            fileInput.value = '';
+            updateImageCounter();
+        }
+
+        // ===== رفع الصورة فوراً =====
+        async function uploadImageToDrive(file, index, studentName) {
+            const formData = new FormData();
+            formData.append('action', 'upload');
+            formData.append('file', file);
+            formData.append('fileName', file.name);
+            formData.append('studentName', studentName || 'طالب');
+
+            const box = document.getElementById(`uploadBox${index}`);
+            const uploadingBar = box.querySelector('.uploading');
+
+            try {
+                uploadingBar.classList.add('active');
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                uploadingBar.classList.remove('active');
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        imageData[index].url = result.url;
+                        imageData[index].fileId = result.fileId;
+                        box.classList.add('has-link');
+                        const linkIcon = box.querySelector('.link-icon');
+                        linkIcon.style.display = 'flex';
+                        return result.url;
+                    }
+                }
+                return null;
+            } catch (error) {
+                uploadingBar.classList.remove('active');
+                return null;
+            }
+        }
+
+        function previewAndUpload(input, index) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const studentName = document.getElementById('fullName').value.trim() || 'طالب';
+                imageData[index] = { file: file, url: null, fileId: null };
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.getElementById(`img${index}`);
+                    const box = document.getElementById(`uploadBox${index}`);
+                    const plus = box.querySelector('.plus-icon');
+                    const removeBtn = box.querySelector('.remove-btn');
+
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    box.classList.add('has-image');
+                    plus.classList.add('hidden');
+                    removeBtn.style.display = 'flex';
+                    updateImageCounter();
+
+                    uploadImageToDrive(file, index, studentName);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // توليد مربعات الصور
+        for (let i = 0; i < 12; i++) {
+            imageData[i] = null;
+            artGrid.innerHTML += `
+                    <div class="upload-box" id="uploadBox${i}" onclick="document.getElementById('file${i}').click()">
+                        <span class="plus-icon text-2xl text-slate-500">+</span>
+                        <span class="link-icon">🔗</span>
+                        <div class="uploading"></div>
+                        <button class="remove-btn" onclick="event.stopPropagation(); removeImage(${i})">✕</button>
+                        <input type="file" id="file${i}" class="hidden" accept="image/*" onchange="previewAndUpload(this, ${i})">
+                        <img id="img${i}" class="hidden w-full h-full object-cover absolute top-0 left-0">
+                    </div>
+                `;
+        }
+
+        // ===== مسح جميع الصور =====
+        document.getElementById('clearImagesBtn').addEventListener('click', () => {
+            for (let i = 0; i < 12; i++) {
+                removeImage(i);
+            }
+            showToast('تم مسح جميع الصور', 'info');
+        });
+
+        // ===== Toast =====
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        // ===== نافذة النجاح =====
+        function showSuccessModal(ticketNumber) {
+            document.getElementById('ticketNumber').textContent = ticketNumber;
+            document.getElementById('successModal').classList.add('show');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('show');
+            location.reload();
+        }
+
+        // ===== التحقق من تنسيق الأرقام =====
+        document.getElementById('phone').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 11);
+        });
+        document.getElementById('nationalId').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 14);
+        });
+        document.getElementById('uniId').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 7);
+        });
+
+        // ===== إرسال النموذج =====
+        document.getElementById('artistForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+
+            btn.disabled = true;
+            btn.innerHTML = 'جاري الإرسال...';
+            progressBar.style.display = 'block';
+            progressFill.style.width = '0%';
+
+            // التحقق من وجود صورة
+            const validImages = imageData.filter(d => d !== null && d.file !== null);
+            if (validImages.length === 0) {
+                showToast('يجب رفع صورة واحدة على الأقل', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'إرسال البيانات';
+                progressBar.style.display = 'none';
+                return;
+            }
+
+            // التحقق من رفع جميع الصور
+            const notUploaded = validImages.filter(d => !d.url);
+            if (notUploaded.length > 0) {
+                showToast(`⚠️ انتظر رفع ${notUploaded.length} صورة`, 'info');
+                btn.disabled = false;
+                btn.innerHTML = 'إرسال البيانات';
+                progressBar.style.display = 'none';
+                return;
+            }
+
+            // التحقق من الحقول المطلوبة
+            const requiredFields = ['fullName', 'uniId', 'phone', 'nationalId', 'grade', 'level', 'workNature', 'execution'];
+            for (let id of requiredFields) {
+                const value = document.getElementById(id).value.trim();
+                if (!value) {
+                    showToast(`يرجى تعبئة حقل ${document.getElementById(id).placeholder || id}`, 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'إرسال البيانات';
+                    progressBar.style.display = 'none';
+                    return;
+                }
+            }
+
+            // جمع البيانات
+            const formData = new FormData();
+            formData.append('action', 'submit');
+
+            ['fullName', 'uniId', 'phone', 'nationalId', 'grade', 'level', 'workNature', 'execution', 'notes'].forEach(id => {
+                formData.append(id, document.getElementById(id).value.trim());
+            });
+
+            ['materials', 'styles', 'talents'].forEach(key => {
+                const checked = Array.from(document.querySelectorAll(`input[name="${key}"]:checked`)).map(c => c
+                .value);
+                formData.append(key, checked.join(', ') || 'لا يوجد');
+            });
+
+            const imageUrls = validImages.map(d => d.url).filter(u => u);
+            formData.append('imageUrls', JSON.stringify(imageUrls));
+            formData.append('imageCount', imageUrls.length);
+
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                progressFill.style.width = '100%';
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        // عرض نافذة النجاح مع رقم التذكرة
+                        const ticketNumber = `#TK-2026-${String(result.row || Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
+                        showSuccessModal(ticketNumber);
+                        // إخفاء شريط التحميل
+                        progressBar.style.display = 'none';
+                    } else if (result.duplicate) {
+                        showToast('⚠️ هذا الطالب مسجل مسبقاً! لا يمكن التسجيل أكثر من مرة', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = 'إرسال البيانات';
+                        progressBar.style.display = 'none';
+                    } else {
+                        showToast('❌ ' + (result.message || 'حدث خطأ في الخادم'), 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = 'إرسال البيانات';
+                        progressBar.style.display = 'none';
+                    }
+                } else {
+                    showToast('❌ حدث خطأ في الخادم، حاول مرة أخرى', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'إرسال البيانات';
+                    progressBar.style.display = 'none';
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('❌ حدث خطأ في الاتصال، تأكد من الإنترنت', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'إرسال البيانات';
+                progressBar.style.display = 'none';
+            }
+        };
     </script>
-  </body>
+</body>
 </html>
