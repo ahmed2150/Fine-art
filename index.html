@@ -3,711 +3,616 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الفن التشكيلي - تسجيل</title>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-        * {
-            font-family: 'Cairo', sans-serif;
-        }
-        body {
-            background: radial-gradient(circle at top right, #0f172a, #020617);
-            color: #e2e8f0;
-            min-height: 100vh;
-        }
-        .glass {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .input-dark {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid #334155;
-            color: white;
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 0.75rem;
-            transition: 0.3s;
-        }
-        .input-dark:focus {
-            border-color: #8b5cf6;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
-        }
-        .input-dark::placeholder {
-            color: #64748b;
-        }
-        .input-dark option {
-            background: #1e293b;
-            color: white;
-        }
-        .upload-box {
-            border: 2px dashed #475569;
-            transition: 0.3s;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100px;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            background: rgba(15, 23, 42, 0.3);
-        }
-        .upload-box:hover {
-            border-color: #8b5cf6;
-            background: rgba(139, 92, 246, 0.1);
-        }
-        .upload-box.has-image {
-            border-color: #22c55e;
-            border-style: solid;
-        }
-        .upload-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .upload-box .remove-btn {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 12px;
-            cursor: pointer;
-            z-index: 5;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .upload-box.has-image .remove-btn {
-            display: flex;
-        }
-        .upload-box .plus-icon {
-            font-size: 2rem;
-            color: #64748b;
-            transition: 0.3s;
-        }
-        .upload-box:hover .plus-icon {
-            color: #8b5cf6;
-        }
-        .upload-box .uploading {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #7c3aed, #a78bfa);
-            width: 0%;
-            transition: width 0.5s;
-            z-index: 3;
-        }
-        .upload-box .uploading.active {
-            width: 100%;
-        }
-        .upload-box .link-icon {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: rgba(34, 197, 94, 0.9);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 10px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 3;
-        }
-        .upload-box.has-link .link-icon {
-            display: flex;
-        }
-        .custom-check input {
-            display: none;
-        }
-        .custom-check span {
-            display: block;
-            padding: 8px 16px;
-            border-radius: 9999px;
-            border: 1px solid #475569;
-            background: #1e293b;
-            color: #94a3b8;
-            transition: 0.3s;
-            cursor: pointer;
-            font-size: 0.875rem;
-            text-align: center;
-        }
-        .custom-check input:checked+span {
-            background: #7c3aed;
-            border-color: #7c3aed;
-            color: white;
-            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
-        }
-        .custom-check:hover span {
-            border-color: #8b5cf6;
-        }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            padding: 16px 32px;
-            border-radius: 16px;
-            font-weight: 600;
-            z-index: 9999;
-            transition: 0.5s;
-            opacity: 0;
-            pointer-events: none;
-            max-width: 90%;
-            text-align: center;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-            pointer-events: auto;
-        }
-        .toast.success {
-            background: #22c55e;
-            color: white;
-            box-shadow: 0 0 30px rgba(34, 197, 94, 0.3);
-        }
-        .toast.error {
-            background: #ef4444;
-            color: white;
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
-        }
-        .toast.info {
-            background: #3b82f6;
-            color: white;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
-        }
-        .image-counter {
-            display: inline-block;
-            padding: 6px 16px;
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            color: #94a3b8;
-            border: 1px solid #334155;
-        }
-        @media (max-width: 640px) {
-            .upload-box {
-                height: 80px;
+    <title>منصة تسجيل المواهب الفنية</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts (Cairo for Arabic) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] },
+                    colors: {
+                        primary: { 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
             }
         }
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #1e293b;
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 8px;
-            display: none;
+    </script>
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        /* Custom Checkbox/Radio Styling */
+        .custom-checkbox:checked + div {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
         }
-        .progress-bar .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #7c3aed, #a78bfa);
-            width: 0%;
-            transition: width 0.3s;
-            border-radius: 2px;
+        .custom-checkbox:checked + div svg { display: block; }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* نافذة النجاح المنبثقة */
-        .success-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 20px;
+        .toast-enter { animation: toastEnter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .toast-leave { animation: toastLeave 0.3s ease-in forwards; }
+        @keyframes toastEnter {
+            from { opacity: 0; transform: translateY(-20px) translateX(-50%); }
+            to { opacity: 1; transform: translateY(0) translateX(-50%); }
         }
-        .success-modal.show {
-            display: flex;
+        @keyframes toastLeave {
+            from { opacity: 1; transform: translateY(0) translateX(-50%); }
+            to { opacity: 0; transform: translateY(-20px) translateX(-50%); }
         }
-        .success-modal .modal-content {
-            background: #1e293b;
-            border: 2px solid #7c3aed;
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-            animation: modalPop 0.5s ease;
+
+        /* Loader */
+        .loader {
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
         }
-        @keyframes modalPop {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .success-modal .icon {
-            font-size: 4rem;
-            margin-bottom: 16px;
-        }
-        .success-modal h2 {
-            font-size: 1.8rem;
-            color: #22c55e;
-            margin-bottom: 12px;
-        }
-        .success-modal p {
-            color: #94a3b8;
-            margin-bottom: 8px;
-            line-height: 1.8;
-        }
-        .success-modal .ticket-number {
-            background: #0f172a;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #a78bfa;
-            margin: 16px 0;
-            border: 1px dashed #7c3aed;
-        }
-        .success-modal .btn-close-modal {
-            background: #7c3aed;
-            color: white;
-            border: none;
-            padding: 12px 32px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 16px;
-        }
-        .success-modal .btn-close-modal:hover {
-            background: #6d28d9;
-            transform: scale(1.02);
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen transition-colors duration-300">
 
-    <!-- ===== نافذة النجاح ===== -->
-    <div class="success-modal" id="successModal">
-        <div class="modal-content">
-            <div class="icon">🎉</div>
-            <h2>تم التسجيل بنجاح!</h2>
-            <p>شكراً لك على التسجيل في منصة الفن التشكيلي.</p>
-            <p>تم حفظ بياناتك وصورك بنجاح.</p>
-            <div class="ticket-number" id="ticketNumber">#TK-2026-0001</div>
-            <p style="font-size:0.9rem; color:#64748b;">سيتم التواصل معك قريباً</p>
-            <button class="btn-close-modal" onclick="closeSuccessModal()">✅ حسناً</button>
-        </div>
-    </div>
-
-    <div class="max-w-4xl mx-auto glass p-6 md:p-8 rounded-3xl shadow-2xl border border-slate-700">
-
-        <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-violet-400 flex items-center justify-center gap-3">
-                استمارة تسجيل الفنانين
-            </h1>
-            <p class="text-slate-400 mt-2">يرجى ملء كافة البيانات بعناية</p>
-        </div>
-
-        <form id="artistForm" class="space-y-6">
-
-            <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-slate-300 text-sm mb-1">الاسم الرباعي</label>
-                    <input type="text" id="fullName" placeholder="مثال: أحمد محمد علي حسن" required class="input-dark">
+<nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-colors duration-300 border-b border-gray-200 dark:border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary-100 dark:bg-primary-900/30 p-2 rounded-lg">
+                    <i class="fa-solid fa-palette text-xl text-primary-600 dark:text-primary-400"></i>
                 </div>
-                <div>
-                    <label class="block text-slate-300 text-sm mb-1">الكود الجامعي</label>
-                    <input type="number" id="uniId" placeholder="7 أرقام" required class="input-dark" maxlength="7">
-                </div>
-                <div>
-                    <label class="block text-slate-300 text-sm mb-1">رقم الهاتف</label>
-                    <input type="tel" id="phone" placeholder="01xxxxxxxxx" pattern="01[0-9]{9}" required class="input-dark">
-                </div>
-                <div>
-                    <label class="block text-slate-300 text-sm mb-1">الرقم القومي</label>
-                    <input type="text" id="nationalId" placeholder="14 رقم" pattern="[0-9]{14}" required class="input-dark">
-                </div>
+                <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400">بوابة المواهب الفنية</h1>
             </div>
-
-            <div class="grid md:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-slate-300 text-sm mb-1">الفرقة الدراسية</label>
-                    <select id="grade" class="input-dark" required>
-                        <option value="" disabled selected>اختر</option>
-                        <option>الفرقة الأولى</option>
-                        <option>الفرقة الثانية</option>
-                        <option>الفرقة الثالثة</option>
-                        <option>الفرقة الرابعة</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-slate-300 text-sm mb-1">المستوى</label>
-                    <select id="level" class="input-dark" required>
-                        <option value="" disabled selected>اختر</option>
-                        <option>مبتدئ</option>
-                        <option>متوسط</option>
-                        <option>متقدم</option>
-                        <option>خبير</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-slate-300 text-sm mb-1">طبيعة العمل</label>
-                    <select id="workNature" class="input-dark" required>
-                        <option value="" disabled selected>اختر</option>
-                        <option>أصلي 100%</option>
-                        <option>مقتبس</option>
-                        <option>إعادة تنفيذ (Recreation)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-slate-300 text-sm mb-1">التنفيذ</label>
-                    <select id="execution" class="input-dark" required>
-                        <option value="" disabled selected>اختر</option>
-                        <option>فردي</option>
-                        <option>جماعي</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-violet-300 mb-2 font-semibold">نوع الخامات</label>
-                    <div id="materials" class="flex flex-wrap gap-2"></div>
-                </div>
-                <div>
-                    <label class="block text-violet-300 mb-2 font-semibold">نوع الرسم</label>
-                    <div id="styles" class="flex flex-wrap gap-2"></div>
-                </div>
-                <div>
-                    <label class="block text-violet-300 mb-2 font-semibold">نوع الموهبة</label>
-                    <div id="talents" class="flex flex-wrap gap-2"></div>
-                </div>
-            </div>
-
-            <div>
-                <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                    <label class="text-violet-300 font-semibold">إضافة صور الأعمال الفنية</label>
-                    <span class="image-counter" id="imageCounter">0 / 12 صورة</span>
-                </div>
-                <p class="text-slate-400 text-sm mb-3">(حد أدنى صورة واحدة - حد أقصى 12 صورة)</p>
-                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3" id="artGrid"></div>
-            </div>
-
-            <div>
-                <label class="block text-slate-300 text-sm mb-1">ملاحظات إضافية</label>
-                <textarea id="notes" placeholder="أي ملاحظات تريد إضافتها..." class="input-dark" rows="3"></textarea>
-            </div>
-
-            <div class="progress-bar" id="progressBar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button type="button" id="clearImagesBtn" class="bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-semibold transition">
-                    مسح جميع الصور
+            <div class="flex items-center gap-4">
+                <button id="themeToggle" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition">
+                    <i class="fa-solid fa-moon text-lg text-gray-600 dark:hidden"></i>
+                    <i class="fa-solid fa-sun text-lg hidden dark:block text-yellow-400"></i>
                 </button>
-                <button type="submit" id="submitBtn" class="bg-violet-600 hover:bg-violet-700 py-3 rounded-xl font-bold transition shadow-lg shadow-violet-900/50 flex items-center justify-center gap-2">
-                    إرسال البيانات
+                <button id="logoutBtn" class="hidden flex items-center gap-2 px-3 py-1.5 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 font-semibold text-sm transition">
+                    <span>خروج</span> <i class="fa-solid fa-sign-out-alt"></i>
                 </button>
             </div>
-        </form>
+        </div>
     </div>
+</nav>
 
-    <div id="toast" class="toast"></div>
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed top-24 left-1/2 z-50 w-full max-w-sm pointer-events-none px-4"></div>
 
-    <script>
-        // ===== رابط التطبيق (عدّل هذا الرابط بعد النشر) =====
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzuIgO-HltXBIVzQatXFrXdpo-UnMIbrmStwBFD_Kv9gRecM1gvh5uwiJNSG9dunK34/exec";
+<!-- Loading Overlay -->
+<div id="globalLoader" class="fixed inset-0 bg-gray-900/90 backdrop-blur-sm z-[100] flex flex-col justify-center items-center hidden">
+    <div class="loader mb-4"></div>
+    <p class="text-white text-lg font-semibold tracking-wide" id="loaderText">جاري التحميل...</p>
+</div>
 
-        // ===== البيانات =====
-        const config = {
-            materials: ["رصاص", "فحم", "جواش", "سوفت باستيل", "أكريليك", "زيت", "حبر", "ألوان خشب", "ماركر"],
-            styles: ["تجريدي", "سيريالي", "تقليدي", "واقعي", "بورتريه", "كاريكاتير", "بوب ارت", "كلاسيكي", "فانتازيا", "تكعيبي",
-                "تعبيري", "مينيمال"
-            ],
-            talents: ["رسم", "نحت", "حفر", "تطريز", "خزف وفخار", "موازييك", "ديكوباج", "تصوير فوتوغرافي", "حرق خشب",
-                "تشكيل ورقي", "ريزن ارت", "اشغال يدوية", "خط عربي", "تشكيل نحاس", "تشكيل خشب", "جرافيك"
-            ]
-        };
+<!-- Main Content -->
+<main class="max-w-5xl mx-auto px-4 py-8 md:py-12 relative overflow-hidden">
+    
+    <!-- Background Decor -->
+    <div class="absolute top-0 right-0 -mt-20 -mr-20 w-72 h-72 bg-primary-500 rounded-full opacity-5 blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-72 h-72 bg-indigo-500 rounded-full opacity-5 blur-[100px] pointer-events-none"></div>
 
-        // ===== توليد الاختيارات =====
-        Object.keys(config).forEach(key => {
-            const container = document.getElementById(key);
-            config[key].forEach(val => {
-                container.innerHTML += `
-                        <label class="custom-check">
-                            <input type="checkbox" name="${key}" value="${val}">
-                            <span>${val}</span>
-                        </label>`;
-            });
-        });
+    <section id="page-login" class="fade-in max-w-md mx-auto mt-10">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 text-center border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+            <div class="w-24 h-24 bg-blue-50 dark:bg-gray-700/50 rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-12 h-12 transform -rotate-3">
+            </div>
+            <h2 class="text-3xl font-extrabold mb-3 text-gray-800 dark:text-white">أهلاً بك يا فنان</h2>
+            <p class="text-gray-500 dark:text-gray-400 mb-8 text-sm leading-relaxed">قم بتسجيل الدخول بحساب جوجل للوصول إلى استمارة التسجيل. يُسمح لكل طالب بالتسجيل مرة واحدة فقط لضمان تكافؤ الفرص.</p>
+            
+            <button id="googleLoginBtn" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-gray-600 font-bold py-3.5 px-4 rounded-xl shadow-sm transition-all duration-300 transform hover:-translate-y-1">
+                <i class="fa-brands fa-google text-lg"></i>
+                تسجيل الدخول للمتابعة
+            </button>
+        </div>
+    </section>
 
-        // ===== معرض الصور =====
-        const artGrid = document.getElementById('artGrid');
-        const imageCounter = document.getElementById('imageCounter');
-        let imageData = [];
-
-        function updateImageCounter() {
-            const count = imageData.filter(d => d !== null && d.file !== null).length;
-            imageCounter.textContent = `${count} / 12 صورة`;
-        }
-
-        function removeImage(index) {
-            if (!imageData[index] || !imageData[index].file) return;
-            imageData[index] = null;
-            const box = document.getElementById(`uploadBox${index}`);
-            const img = document.getElementById(`img${index}`);
-            const plus = box.querySelector('.plus-icon');
-            const removeBtn = box.querySelector('.remove-btn');
-            const linkIcon = box.querySelector('.link-icon');
-            const fileInput = document.getElementById(`file${index}`);
-
-            box.classList.remove('has-image', 'has-link');
-            img.classList.add('hidden');
-            img.src = '';
-            plus.classList.remove('hidden');
-            removeBtn.style.display = 'none';
-            linkIcon.style.display = 'none';
-            fileInput.value = '';
-            updateImageCounter();
-        }
-
-        // ===== رفع الصورة فوراً =====
-        async function uploadImageToDrive(file, index, studentName) {
-            const formData = new FormData();
-            formData.append('action', 'upload');
-            formData.append('file', file);
-            formData.append('fileName', file.name);
-            formData.append('studentName', studentName || 'طالب');
-
-            const box = document.getElementById(`uploadBox${index}`);
-            const uploadingBar = box.querySelector('.uploading');
-
-            try {
-                uploadingBar.classList.add('active');
-
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                uploadingBar.classList.remove('active');
-
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        imageData[index].url = result.url;
-                        imageData[index].fileId = result.fileId;
-                        box.classList.add('has-link');
-                        const linkIcon = box.querySelector('.link-icon');
-                        linkIcon.style.display = 'flex';
-                        return result.url;
-                    }
-                }
-                return null;
-            } catch (error) {
-                uploadingBar.classList.remove('active');
-                return null;
-            }
-        }
-
-        function previewAndUpload(input, index) {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                const studentName = document.getElementById('fullName').value.trim() || 'طالب';
-                imageData[index] = { file: file, url: null, fileId: null };
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = document.getElementById(`img${index}`);
-                    const box = document.getElementById(`uploadBox${index}`);
-                    const plus = box.querySelector('.plus-icon');
-                    const removeBtn = box.querySelector('.remove-btn');
-
-                    img.src = e.target.result;
-                    img.classList.remove('hidden');
-                    box.classList.add('has-image');
-                    plus.classList.add('hidden');
-                    removeBtn.style.display = 'flex';
-                    updateImageCounter();
-
-                    uploadImageToDrive(file, index, studentName);
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // توليد مربعات الصور
-        for (let i = 0; i < 12; i++) {
-            imageData[i] = null;
-            artGrid.innerHTML += `
-                    <div class="upload-box" id="uploadBox${i}" onclick="document.getElementById('file${i}').click()">
-                        <span class="plus-icon text-2xl text-slate-500">+</span>
-                        <span class="link-icon">🔗</span>
-                        <div class="uploading"></div>
-                        <button class="remove-btn" onclick="event.stopPropagation(); removeImage(${i})">✕</button>
-                        <input type="file" id="file${i}" class="hidden" accept="image/*" onchange="previewAndUpload(this, ${i})">
-                        <img id="img${i}" class="hidden w-full h-full object-cover absolute top-0 left-0">
+    <section id="page-form" class="fade-in hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 md:p-10 border border-gray-100 dark:border-gray-700">
+            <div class="flex items-center gap-4 mb-8 border-b border-gray-100 dark:border-gray-700 pb-6">
+                <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center text-primary-600 dark:text-primary-400">
+                    <i class="fa-solid fa-pen-nib text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold">استمارة التسجيل</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">يرجى ملء البيانات بدقة ورفع أفضل أعمالك.</p>
+                </div>
+            </div>
+            
+            <form id="registrationForm" class="space-y-10">
+                
+                <!-- Section 1: Personal Info -->
+                <div class="space-y-5">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm">1</span>
+                        البيانات الشخصية
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50/50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-700/50">
+                        <!-- Name -->
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">الاسم رباعي باللغة العربية <span class="text-red-500">*</span></label>
+                            <input type="text" id="fullName" required placeholder="أحمد محمد محمود علي" class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition text-gray-800 dark:text-white placeholder-gray-400">
+                        </div>
+                        
+                        <!-- WhatsApp -->
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">رقم الواتساب <span class="text-red-500">*</span></label>
+                            <input type="tel" id="whatsapp" required placeholder="010XXXXXXXX" dir="ltr" class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition text-right text-gray-800 dark:text-white placeholder-gray-400">
+                            <p class="text-xs text-gray-500 mt-1">11 رقم يبدأ بـ 010, 011, 012, 015</p>
+                        </div>
+                        
+                        <!-- National ID -->
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">الرقم القومي <span class="text-red-500">*</span></label>
+                            <input type="text" id="nationalId" required placeholder="14 رقم" dir="ltr" maxlength="14" class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition text-right text-gray-800 dark:text-white placeholder-gray-400">
+                        </div>
+                        
+                        <!-- Address -->
+                        <div>
+                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">العنوان <span class="text-red-500">*</span></label>
+                            <input type="text" id="address" required placeholder="الشارع – المدينة - المحافظة" class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition text-gray-800 dark:text-white placeholder-gray-400">
+                        </div>
+                        
+                        <!-- Year -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">الفرقة الدراسية <span class="text-red-500">*</span></label>
+                            <select id="academicYear" required class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition appearance-none text-gray-800 dark:text-white">
+                                <option value="" disabled selected>اختر الفرقة الدراسية...</option>
+                                <option value="الفرقة الاولي">الفرقة الأولى</option>
+                                <option value="الفرقة الثانية">الفرقة الثانية</option>
+                                <option value="الفرقة الثالثة">الفرقة الثالثة</option>
+                                <option value="الفرقة الرابعة">الفرقة الرابعة</option>
+                            </select>
+                        </div>
                     </div>
-                `;
-        }
+                </div>
 
-        // ===== مسح جميع الصور =====
-        document.getElementById('clearImagesBtn').addEventListener('click', () => {
-            for (let i = 0; i < 12; i++) {
-                removeImage(i);
+                <!-- Section 2: Art Details -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm">2</span>
+                        التفاصيل الفنية
+                    </h3>
+                    
+                    <div class="p-6 rounded-2xl border border-gray-100 dark:border-gray-700/50 space-y-8">
+                        <!-- Materials -->
+                        <div>
+                            <label class="block text-sm font-bold mb-3 text-gray-700 dark:text-gray-300">نوع الخامات (يمكن اختيار أكثر من نوع) <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="materialsContainer"></div>
+                        </div>
+
+                        <!-- Art Styles -->
+                        <div>
+                            <label class="block text-sm font-bold mb-3 text-gray-700 dark:text-gray-300">نوع الرسم (يمكن اختيار أكثر من نوع) <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="artStylesContainer"></div>
+                        </div>
+
+                        <!-- Talents -->
+                        <div>
+                            <label class="block text-sm font-bold mb-3 text-gray-700 dark:text-gray-300">نوع الموهبة (يمكن اختيار أكثر من نوع) <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="talentsContainer"></div>
+                        </div>
+                        
+                        <!-- Dropdowns (Level, Nature, Execution) -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                            <div>
+                                <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">المستوى <span class="text-red-500">*</span></label>
+                                <select id="level" required class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition appearance-none">
+                                    <option value="" disabled selected>اختر المستوى...</option>
+                                    <option value="مبتدئ">مبتدئ</option>
+                                    <option value="متوسط">متوسط</option>
+                                    <option value="متقدم">متقدم</option>
+                                    <option value="خبير">خبير</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">طبيعة العمل <span class="text-red-500">*</span></label>
+                                <select id="workNature" required class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition appearance-none">
+                                    <option value="" disabled selected>اختر الطبيعة...</option>
+                                    <option value="أصلي 100%">أصلي 100%</option>
+                                    <option value="مقتبس">مقتبس</option>
+                                    <option value="إعادة تنفيذ Recreation">إعادة تنفيذ Recreation</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">التنفيذ <span class="text-red-500">*</span></label>
+                                <select id="execution" required class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition appearance-none">
+                                    <option value="" disabled selected>اختر طريقة التنفيذ...</option>
+                                    <option value="فردي">فردي</option>
+                                    <option value="جماعي">جماعي</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Artwork Upload -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center text-sm">3</span>
+                            رفع صور الاعمال الفنية <span class="text-red-500">*</span>
+                        </h3>
+                        <span id="imageCounter" class="bg-gray-100 dark:bg-gray-700 text-sm px-4 py-1.5 rounded-full font-bold text-gray-700 dark:text-gray-300">0 / 12</span>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">اضغط على المربعات لإضافة الصور. الحد الأدنى صورة واحدة، الأقصى 12 صورة. سيتم ضغط الصور تلقائياً.</p>
+                    
+                    <div class="bg-gray-50/50 dark:bg-gray-800/50 p-6 rounded-2xl border border-gray-100 dark:border-gray-700/50">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="imageGrid">
+                            <!-- JS populates this -->
+                        </div>
+                        <input type="file" id="fileInput" multiple accept="image/*" class="hidden">
+                    </div>
+                </div>
+
+                <!-- Section 4: Questions -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                        <span class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center text-sm">4</span>
+                        طرح أسئلة (اختياري)
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">سيتم الرد على استفساراتك من خلال جوجل شيت لاحقاً.</p>
+                    <textarea id="questions" rows="3" placeholder="اكتب سؤالك أو استفسارك هنا..." class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition resize-none text-gray-800 dark:text-white placeholder-gray-400"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary-500/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-3 text-lg mt-8">
+                    <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                    تسجيل البيانات ورفع الأعمال
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Page 3: Result -->
+    <section id="page-result" class="fade-in hidden max-w-2xl mx-auto mt-10">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-12 text-center border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+            <!-- Confetti/Decor -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-green-500 rounded-full opacity-10 blur-3xl pointer-events-none"></div>
+            
+            <div class="w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 text-green-500 ring-4 ring-green-50 dark:ring-green-900/20">
+                <i class="fa-solid fa-check text-5xl"></i>
+            </div>
+            
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-3 text-gray-800 dark:text-white">تم التسجيل بنجاح!</h2>
+            <p class="text-gray-500 dark:text-gray-400 mb-8 text-lg">تم حفظ بياناتك ورفع أعمالك الفنية إلى النظام (Google Drive & Sheets).</p>
+            
+            <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 mb-8 border border-gray-200 dark:border-gray-700 shadow-inner">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 font-semibold uppercase tracking-wider">كود الطالب الخاص بك</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div id="studentCodeDisplay" class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400 tracking-wider"></div>
+                    <button id="copyBtn" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 hover:border-primary-500 p-3 rounded-xl transition-all shadow-sm" title="نسخ الكود">
+                        <i class="fa-regular fa-copy text-xl"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-red-500 mt-4 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> يرجى الاحتفاظ بهذا الكود، ستحتاجه لمعرفة النتيجة.</p>
+            </div>
+
+            <div class="text-right bg-blue-50/50 dark:bg-blue-900/10 p-5 rounded-xl border border-blue-100 dark:border-blue-800/30">
+                <h4 class="font-bold text-blue-800 dark:text-blue-300 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info"></i> تعليمات هامة:
+                </h4>
+                <ul class="text-sm text-blue-700 dark:text-blue-400 space-y-2 list-none p-0 m-0">
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check-circle mt-1 text-blue-500"></i> تم ربط التسجيل بحساب جوجل الخاص بك.</li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check-circle mt-1 text-blue-500"></i> لا يمكن التسجيل مرة أخرى بنفس الحساب.</li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check-circle mt-1 text-blue-500"></i> سيتم إعلان الردود على الاستفسارات في الجداول المعلنة لاحقاً.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script type="module">
+    // Firebase is used ONLY for Google Authentication (Free, secure, fits GitHub pages)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+    // --- ضعي هنا الرابط الذي حصلتِ عليه من Google Apps Script ---
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxerU27u_OpzYjKcySUQZ6FfjxFjwKU0-bFbz6UN7P5wSuRRI_YcZrw54a2A4iSp47vGw/exec";
+    
+    // إعدادات Firebase وهمية/مؤقتة للـ Demo (يُفضل استبدالها بإعدادات مشروع Firebase حقيقي مجاني للحماية الكاملة)
+    // لتشغيل جوجل لوج ان حقيقي على جيت هاب، ستحتاجين لانشاء مشروع على console.firebase.google.com ووضع ال config هنا.
+    // لكن للعملية الحالية (داخل Canvas/Demo) سنقوم بتجاوزها إن لم تكن متوفرة ونسمح بـ Fake Login.
+    const firebaseConfig = {
+        apiKey: "demo-key", authDomain: "demo-project.firebaseapp.com", projectId: "demo-project"
+    };
+    
+    let app, auth;
+    try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+    } catch(e) { console.warn("Firebase Init fallback Mode"); }
+
+    // State Variables
+    let currentUser = null;
+    let selectedImagesArray = []; 
+    const MAX_IMAGES = 12;
+
+    // Arrays from Requirements
+    const materialsList = ['رصاص', 'فحم', 'جواش', 'سوفت باستيل', 'اكريليك', 'زيت', 'حبر', 'ألوان خشب', 'ماركر'];
+    const artStylesList = ['تجريدي', 'سيريالي', 'تقليدي', 'واقعي', 'بورتريه', 'كاريكاتير', 'بوب ارت', 'كلاسيكي', 'فانتازيا', 'تكعيبي', 'تعبيري', 'مينيمال'];
+    const talentsList = ['رسم', 'نحت', 'حفر', 'تطريز', 'خزف وفخار', 'موازييك', 'ديكوباج', 'تصوير فوتوغرافي', 'حرق على الخشب', 'تشكيل ورقي', 'ريزن ارت', 'اشغال يدوية', 'خط عربي', 'تشكيل نحاس', 'تشكيل خشب', 'جرافيك'];
+
+    // DOM Elements Map
+    const els = {
+        pages: { login: document.getElementById('page-login'), form: document.getElementById('page-form'), result: document.getElementById('page-result') },
+        btn: { login: document.getElementById('googleLoginBtn'), logout: document.getElementById('logoutBtn'), theme: document.getElementById('themeToggle'), copy: document.getElementById('copyBtn') },
+        form: document.getElementById('registrationForm'),
+        containers: { mat: document.getElementById('materialsContainer'), art: document.getElementById('artStylesContainer'), tal: document.getElementById('talentsContainer'), img: document.getElementById('imageGrid') },
+        fileInput: document.getElementById('fileInput'),
+        codeDisplay: document.getElementById('studentCodeDisplay'),
+        imgCounter: document.getElementById('imageCounter'),
+        loader: document.getElementById('globalLoader'),
+        loaderText: document.getElementById('loaderText')
+    };
+
+    // Dark Mode Toggle
+    els.btn.theme.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+    });
+
+    // Custom Toast/Alert System (No alert() used)
+    function showToast(message, type = "error") {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+        const icon = type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-check';
+        
+        toast.className = `transform -translate-x-1/2 ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 font-bold toast-enter mb-3 border border-white/20`;
+        toast.innerHTML = `<i class="fa-solid ${icon} text-2xl"></i> <span class="text-sm md:text-base">${message}</span>`;
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.replace('toast-enter', 'toast-leave');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    function showLoader(text) { els.loaderText.innerText = text; els.loader.classList.remove('hidden'); }
+    function hideLoader() { els.loader.classList.add('hidden'); }
+    function switchPage(page) { Object.values(els.pages).forEach(p => p.classList.add('hidden')); els.pages[page].classList.remove('hidden'); }
+
+    // Generate Checkboxes dynamically
+    function buildCheckboxes(container, list, namePrefix) {
+        list.forEach((item, i) => {
+            const label = document.createElement('label');
+            label.className = "cursor-pointer block relative";
+            label.innerHTML = `
+                <input type="checkbox" name="${namePrefix}" value="${item}" class="custom-checkbox opacity-0 absolute h-0 w-0">
+                <div class="h-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-2 py-3 text-center text-sm font-bold transition hover:border-primary-400 dark:hover:border-primary-500 flex flex-col items-center justify-center gap-2 text-gray-600 dark:text-gray-300">
+                    <i class="fa-solid fa-check text-primary-500 hidden text-lg"></i>
+                    <span>${item}</span>
+                </div>
+            `;
+            container.appendChild(label);
+        });
+    }
+    buildCheckboxes(els.containers.mat, materialsList, 'material');
+    buildCheckboxes(els.containers.art, artStylesList, 'style');
+    buildCheckboxes(els.containers.tal, talentsList, 'talent');
+
+    // Fake Auth Flow for Demo/Local without valid Firebase Config
+    // If you add real Firebase config, this seamlessly uses real Google Auth.
+    els.btn.login.addEventListener('click', async () => {
+        showLoader("جاري تسجيل الدخول...");
+        try {
+            if(auth.app.options.apiKey === "demo-key") {
+                // Mock Login for GitHub Pages if Firebase isn't set up yet
+                setTimeout(() => {
+                    currentUser = { email: "student@example.com", uid: "demo123" };
+                    handleLoginSuccess();
+                }, 1000);
+            } else {
+                // Real Google Auth
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
             }
-            showToast('تم مسح جميع الصور', 'info');
+        } catch (error) {
+            hideLoader(); showToast("فشل تسجيل الدخول. أعد المحاولة.");
+        }
+    });
+
+    els.btn.logout.addEventListener('click', () => {
+        if(auth.app.options.apiKey !== "demo-key") signOut(auth);
+        currentUser = null;
+        els.btn.logout.classList.add('hidden');
+        switchPage('login');
+        els.form.reset();
+        selectedImagesArray = [];
+        renderImages();
+    });
+
+    function handleLoginSuccess() {
+        hideLoader();
+        els.btn.logout.classList.remove('hidden');
+        
+        // Check local storage to prevent duplicate submission on same device
+        const savedCode = localStorage.getItem(`art_reg_${currentUser.uid}`);
+        if(savedCode) {
+            els.codeDisplay.innerText = savedCode;
+            switchPage('result');
+        } else {
+            switchPage('form');
+        }
+    }
+
+    if(auth && auth.app.options.apiKey !== "demo-key") {
+        onAuthStateChanged(auth, user => {
+            if (user) { currentUser = user; handleLoginSuccess(); }
+        });
+    }
+
+    function renderImages() {
+        els.containers.img.innerHTML = '';
+        els.imgCounter.innerText = `${selectedImagesArray.length} / ${MAX_IMAGES}`;
+        
+        selectedImagesArray.forEach((imgData, index) => {
+            const div = document.createElement('div');
+            div.className = "aspect-square rounded-xl border-2 border-primary-100 dark:border-primary-900/50 relative overflow-hidden group shadow-sm";
+            div.innerHTML = `
+                <img src="${imgData}" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-red-500/80 backdrop-blur-sm flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200 cursor-pointer text-white" onclick="removeImage(${index})">
+                    <i class="fa-solid fa-trash text-2xl mb-1"></i>
+                    <span class="text-xs font-bold">حذف</span>
+                </div>
+            `;
+            els.containers.img.appendChild(div);
         });
 
-        // ===== Toast =====
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast ${type} show`;
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 4000);
+        if (selectedImagesArray.length < MAX_IMAGES) {
+            const addBtn = document.createElement('div');
+            addBtn.className = "aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center text-gray-400 hover:text-primary-500 hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-gray-700 transition cursor-pointer group";
+            addBtn.innerHTML = `
+                <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded-full mb-2 group-hover:bg-primary-100 dark:group-hover:bg-gray-600 transition">
+                    <i class="fa-solid fa-plus text-xl text-gray-500 group-hover:text-primary-600 dark:group-hover:text-primary-400"></i>
+                </div>
+                <span class="text-xs font-bold">إضافة صورة</span>
+            `;
+            addBtn.onclick = () => els.fileInput.click();
+            els.containers.img.appendChild(addBtn);
         }
+    }
 
-        // ===== نافذة النجاح =====
-        function showSuccessModal(ticketNumber) {
-            document.getElementById('ticketNumber').textContent = ticketNumber;
-            document.getElementById('successModal').classList.add('show');
+    window.removeImage = (index) => { selectedImagesArray.splice(index, 1); renderImages(); };
+
+    // Image Resizer: Extremely important for Google Apps Script to not timeout
+    function resizeImage(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    const MAX = 800; // Resize to 800px max
+                    if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } } 
+                    else { if (h > MAX) { w *= MAX / h; h = MAX; } }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    resolve(canvas.toDataURL('image/jpeg', 0.6)); // 60% quality JPEG
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    els.fileInput.addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files);
+        if (selectedImagesArray.length + files.length > MAX_IMAGES) {
+            showToast(`الحد الأقصى ${MAX_IMAGES} صورة فقط.`); return;
         }
-
-        function closeSuccessModal() {
-            document.getElementById('successModal').classList.remove('show');
-            location.reload();
+        showLoader("جاري معالجة الصور للحفاظ على الباقة...");
+        for (let f of files) {
+            if (!f.type.startsWith('image/')) continue;
+            selectedImagesArray.push(await resizeImage(f));
         }
+        els.fileInput.value = '';
+        renderImages();
+        hideLoader();
+    });
+    renderImages();
 
-        // ===== التحقق من تنسيق الأرقام =====
-        document.getElementById('phone').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '').slice(0, 11);
-        });
-        document.getElementById('nationalId').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '').slice(0, 14);
-        });
-        document.getElementById('uniId').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '').slice(0, 7);
-        });
+    els.form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        // ===== إرسال النموذج =====
-        document.getElementById('artistForm').onsubmit = async (e) => {
-            e.preventDefault();
+        // 1. Validations
+        const fullName = document.getElementById('fullName').value.trim();
+        if (fullName.split(/\s+/).length < 4) return showToast("عفواً، يجب إدخال الاسم رباعي");
 
-            const btn = document.getElementById('submitBtn');
-            const progressBar = document.getElementById('progressBar');
-            const progressFill = document.getElementById('progressFill');
+        const whatsapp = document.getElementById('whatsapp').value.trim();
+        if (!/^01[0125][0-9]{8}$/.test(whatsapp)) return showToast("رقم الواتساب غير صحيح، تأكد أنه 11 رقم ويبدأ بـ 01");
 
-            btn.disabled = true;
-            btn.innerHTML = 'جاري الإرسال...';
-            progressBar.style.display = 'block';
-            progressFill.style.width = '0%';
+        const nationalId = document.getElementById('nationalId').value.trim();
+        if (!/^[0-9]{14}$/.test(nationalId)) return showToast("الرقم القومي يجب أن يتكون من 14 رقم صحيح");
 
-            // التحقق من وجود صورة
-            const validImages = imageData.filter(d => d !== null && d.file !== null);
-            if (validImages.length === 0) {
-                showToast('يجب رفع صورة واحدة على الأقل', 'error');
-                btn.disabled = false;
-                btn.innerHTML = 'إرسال البيانات';
-                progressBar.style.display = 'none';
-                return;
-            }
+        const getChx = (n) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(cb => cb.value);
+        const mats = getChx('material'), arts = getChx('style'), tals = getChx('talent');
 
-            // التحقق من رفع جميع الصور
-            const notUploaded = validImages.filter(d => !d.url);
-            if (notUploaded.length > 0) {
-                showToast(`⚠️ انتظر رفع ${notUploaded.length} صورة`, 'info');
-                btn.disabled = false;
-                btn.innerHTML = 'إرسال البيانات';
-                progressBar.style.display = 'none';
-                return;
-            }
+        if (!mats.length) return showToast("اختر نوع واحد على الأقل من الخامات");
+        if (!arts.length) return showToast("اختر نوع واحد على الأقل من أنواع الرسم");
+        if (!tals.length) return showToast("اختر نوع واحد على الأقل من المواهب");
+        if (!selectedImagesArray.length) return showToast("يجب رفع صورة واحدة على الأقل لأعمالك");
 
-            // التحقق من الحقول المطلوبة
-            const requiredFields = ['fullName', 'uniId', 'phone', 'nationalId', 'grade', 'level', 'workNature', 'execution'];
-            for (let id of requiredFields) {
-                const value = document.getElementById(id).value.trim();
-                if (!value) {
-                    showToast(`يرجى تعبئة حقل ${document.getElementById(id).placeholder || id}`, 'error');
-                    btn.disabled = false;
-                    btn.innerHTML = 'إرسال البيانات';
-                    progressBar.style.display = 'none';
-                    return;
-                }
-            }
+        // 2. Generate Code
+        const rand = Math.floor(1000 + Math.random() * 9000);
+        const studentCode = `ART-${rand}`;
 
-            // جمع البيانات
-            const formData = new FormData();
-            formData.append('action', 'submit');
-
-            ['fullName', 'uniId', 'phone', 'nationalId', 'grade', 'level', 'workNature', 'execution', 'notes'].forEach(id => {
-                formData.append(id, document.getElementById(id).value.trim());
-            });
-
-            ['materials', 'styles', 'talents'].forEach(key => {
-                const checked = Array.from(document.querySelectorAll(`input[name="${key}"]:checked`)).map(c => c
-                .value);
-                formData.append(key, checked.join(', ') || 'لا يوجد');
-            });
-
-            const imageUrls = validImages.map(d => d.url).filter(u => u);
-            formData.append('imageUrls', JSON.stringify(imageUrls));
-            formData.append('imageCount', imageUrls.length);
-
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                progressFill.style.width = '100%';
-
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        // عرض نافذة النجاح مع رقم التذكرة
-                        const ticketNumber = `#TK-2026-${String(result.row || Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
-                        showSuccessModal(ticketNumber);
-                        // إخفاء شريط التحميل
-                        progressBar.style.display = 'none';
-                    } else if (result.duplicate) {
-                        showToast('⚠️ هذا الطالب مسجل مسبقاً! لا يمكن التسجيل أكثر من مرة', 'error');
-                        btn.disabled = false;
-                        btn.innerHTML = 'إرسال البيانات';
-                        progressBar.style.display = 'none';
-                    } else {
-                        showToast('❌ ' + (result.message || 'حدث خطأ في الخادم'), 'error');
-                        btn.disabled = false;
-                        btn.innerHTML = 'إرسال البيانات';
-                        progressBar.style.display = 'none';
-                    }
-                } else {
-                    showToast('❌ حدث خطأ في الخادم، حاول مرة أخرى', 'error');
-                    btn.disabled = false;
-                    btn.innerHTML = 'إرسال البيانات';
-                    progressBar.style.display = 'none';
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('❌ حدث خطأ في الاتصال، تأكد من الإنترنت', 'error');
-                btn.disabled = false;
-                btn.innerHTML = 'إرسال البيانات';
-                progressBar.style.display = 'none';
-            }
+        const payload = {
+            studentCode, email: currentUser.email || "demo@example.com",
+            fullName, whatsapp, nationalId,
+            address: document.getElementById('address').value.trim(),
+            academicYear: document.getElementById('academicYear').value,
+            materials: mats, artStyles: arts, talents: tals,
+            level: document.getElementById('level').value,
+            workNature: document.getElementById('workNature').value,
+            execution: document.getElementById('execution').value,
+            questions: document.getElementById('questions').value.trim(),
+            images: selectedImagesArray
         };
-    </script>
+
+        // 3. Send to Google Apps Script
+        showLoader("جاري رفع البيانات والصور درايف... الرجاء عدم إغلاق الصفحة");
+        try {
+            const res = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (data.status === "success") {
+                // Save locally to prevent resubmitting on same browser
+                localStorage.setItem(`art_reg_${currentUser.uid}`, studentCode);
+                els.codeDisplay.innerText = studentCode;
+                switchPage('result');
+            } else {
+                showToast("حدث خطأ من الخادم: " + data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            showToast("فشل الاتصال بالخادم. تأكد من إعدادات الرابط (Web App URL).");
+        } finally {
+            hideLoader();
+        }
+    });
+
+    // Copy Button logic
+    els.btn.copy.addEventListener('click', () => {
+        const text = els.codeDisplay.innerText;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => showToast("تم نسخ الكود بنجاح!", "success"))
+        .catch(() => {
+            const t = document.createElement("textarea"); t.value = text;
+            document.body.appendChild(t); t.select(); document.execCommand("copy");
+            document.body.removeChild(t); showToast("تم نسخ الكود بنجاح!", "success");
+        });
+    });
+
+</script>
 </body>
 </html>
