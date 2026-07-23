@@ -123,6 +123,11 @@
             <h2 class="text-3xl font-extrabold mb-3 text-gray-800 dark:text-white">أهلاً بك يا فنان</h2>
             <p class="text-gray-500 dark:text-gray-400 mb-8 text-sm leading-relaxed">قم بتسجيل الدخول بحساب جوجل للوصول إلى استمارة التسجيل. يُسمح لكل طالب بالتسجيل مرة واحدة فقط لضمان تكافؤ الفرص.</p>
             
+            <div class="mb-6 text-right">
+                <label class="block text-sm font-bold mb-2 text-gray-700 dark:text-gray-300">البريد الإلكتروني <span class="text-red-500">*</span></label>
+                <input type="email" id="loginEmail" placeholder="example@gmail.com" required dir="ltr" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition text-gray-800 dark:text-white placeholder-gray-400">
+            </div>
+
             <button id="googleLoginBtn" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 text-gray-800 dark:text-white hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-gray-600 font-bold py-3.5 px-4 rounded-xl shadow-sm transition-all duration-300 transform hover:-translate-y-1">
                 <i class="fa-brands fa-google text-lg"></i>
                 تسجيل الدخول للمتابعة
@@ -268,16 +273,6 @@
                     </div>
                 </div>
 
-                <!-- Section 4: Questions -->
-                <div class="space-y-4">
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                        <span class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center text-sm">4</span>
-                        طرح أسئلة (اختياري)
-                    </h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">سيتم الرد على استفساراتك من خلال جوجل شيت لاحقاً.</p>
-                    <textarea id="questions" rows="3" placeholder="اكتب سؤالك أو استفسارك هنا..." class="w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary-500 outline-none transition resize-none text-gray-800 dark:text-white placeholder-gray-400"></textarea>
-                </div>
-
                 <!-- Submit Button -->
                 <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-indigo-600 hover:from-primary-700 hover:to-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary-500/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-3 text-lg mt-8">
                     <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
@@ -418,17 +413,23 @@
     // Fake Auth Flow for Demo/Local without valid Firebase Config
     // If you add real Firebase config, this seamlessly uses real Google Auth.
     els.btn.login.addEventListener('click', async () => {
+        const emailInput = document.getElementById('loginEmail').value.trim();
+        if(!emailInput || !emailInput.includes('@')) {
+            return showToast("يرجى كتابة البريد الإلكتروني بشكل صحيح أولاً");
+        }
+
         showLoader("جاري تسجيل الدخول...");
         try {
             if(auth.app.options.apiKey === "demo-key") {
                 // Mock Login for GitHub Pages if Firebase isn't set up yet
                 setTimeout(() => {
-                    currentUser = { email: "student@example.com", uid: "demo123" };
+                    currentUser = { email: emailInput, uid: emailInput.toLowerCase() };
                     handleLoginSuccess();
                 }, 1000);
             } else {
                 // Real Google Auth
                 const provider = new GoogleAuthProvider();
+                provider.setCustomParameters({ login_hint: emailInput }); // تمرير الإيميل لجوجل
                 await signInWithPopup(auth, provider);
             }
         } catch (error) {
@@ -508,12 +509,12 @@
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
                     let w = img.width, h = img.height;
-                    const MAX = 800; // Resize to 800px max
+                    const MAX = 600; // تقليل الأبعاد إلى 600 بكسل لزيادة سرعة الرفع
                     if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } } 
                     else { if (h > MAX) { w *= MAX / h; h = MAX; } }
                     canvas.width = w; canvas.height = h;
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6)); // 60% quality JPEG
+                    resolve(canvas.toDataURL('image/jpeg', 0.5)); // جودة 50% لتقليل الحجم بشكل كبير
                 };
                 img.src = e.target.result;
             };
@@ -526,7 +527,7 @@
         if (selectedImagesArray.length + files.length > MAX_IMAGES) {
             showToast(`الحد الأقصى ${MAX_IMAGES} صورة فقط.`); return;
         }
-        showLoader("جاري معالجة الصور للحفاظ على الباقة...");
+        showLoader("جاري ضغط ومعالجة الصور لتسريع الرفع...");
         for (let f of files) {
             if (!f.type.startsWith('image/')) continue;
             selectedImagesArray.push(await resizeImage(f));
@@ -571,7 +572,6 @@
             level: document.getElementById('level').value,
             workNature: document.getElementById('workNature').value,
             execution: document.getElementById('execution').value,
-            questions: document.getElementById('questions').value.trim(),
             images: selectedImagesArray
         };
 
